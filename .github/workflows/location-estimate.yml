@@ -1,0 +1,18 @@
+name: Location estimate tests
+on:
+  push:
+    paths:
+      - 'location_estimate.py'
+      - 'test_location_estimate.py'
+      - 'training_comparables.csv'
+      - '.github/workflows/location-estimate.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest -v test_location_estimate.py
