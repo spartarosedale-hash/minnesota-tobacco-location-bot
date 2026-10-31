@@ -1,0 +1,11 @@
+Minnesota Tobacco Location Bot — starter scaffold
+
+Upload bot.py, requirements.txt, and sources.csv into the repository root.
+Create .github/workflows/weekly-scan.yml with the workflow content.
+The GitHub web uploader may not preserve folders when selecting files on mobile.
+
+IMPORTANT: sources.csv intentionally contains only a header. Add public, permitted city-by-city sources before expecting results. This version detects changed pages with vacancy-related words; it does NOT verify individual vacancies, extract lease terms, or confirm tobacco licensing. Do not treat findings as verified listings.
+
+GitHub Actions: Actions tab > Weekly Minnesota retail vacancy source scan > Run workflow.
+Repository Settings > Actions > General > Workflow permissions may need Read and write permissions for automatic result commits.
+The workflow runs at 14:00 UTC Mondays, which shifts local clock time with daylight saving.
