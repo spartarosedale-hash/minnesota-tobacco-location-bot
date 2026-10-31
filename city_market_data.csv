@@ -1,0 +1,5 @@
+store_id,city,metric,value,period,geography,source_url,notes
+litchfield,Litchfield MN,population_total,6528,2025,city,https://www.census.gov/quickfacts/fact/table/litchfieldcityminnesota/RTN130222,Population estimate
+litchfield,Litchfield MN,median_household_income,54875,2020-2024,city,https://www.census.gov/quickfacts/fact/table/litchfieldcityminnesota/RTN130222,ACS 5-year
+litchfield,Litchfield MN,percent_age_65_plus,22.2,2020-2024,city,https://www.census.gov/quickfacts/fact/table/litchfieldcityminnesota/RTN130222,Percent
+litchfield,Litchfield MN,percent_female,48.2,2020-2024,city,https://www.census.gov/quickfacts/fact/table/litchfieldcityminnesota/RTN130222,Percent
