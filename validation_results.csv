@@ -1,3 +1,3 @@
-store_name,address,monthly_sales_low,monthly_sales_high,actual_midpoint,prior_estimate,absolute_percentage_error,role,retail_only,summer_peak_monthly_sales,near_gas_station,near_liquor_store,highway_frontage_reported,notes
-Litchfield Tobacco,"231 N Sibley Ave, Litchfield, MN 55355",90000,100000,95000,61000,35.8,validation,,,,,"Reported sales; no leakage into training"
-Zimmerman Tobacco,"26219 Fremont Dr Ste 101, Zimmerman, MN 55398",240000,290000,265000,61000,77.0,validation,yes,330000,yes,yes,yes,"Prior forecast assumed 1200 sq ft without confirmation; not a true site-calibrated estimate"
+store_name,address,monthly_sales_low,monthly_sales_high,actual_midpoint,prior_estimate,absolute_percentage_error,role,retail_only,summer_peak_monthly_sales,near_gas_station,near_liquor_store,highway_frontage_reported,notes,liquor_store_adjacency
+Litchfield Tobacco,"231 N Sibley Ave, Litchfield, MN 55355",90000,100000,95000,61000,35.8,validation,,,,,"Reported sales; no leakage into training",
+Zimmerman Tobacco,"26219 Fremont Dr Ste 101, Zimmerman, MN 55398",240000,290000,265000,61000,77.0,validation,yes,330000,yes,yes,yes,"Prior forecast assumed 1200 sq ft without confirmation; not a true site-calibrated estimate",adjacent
