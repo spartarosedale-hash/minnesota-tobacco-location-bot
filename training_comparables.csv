@@ -1,3 +1,4 @@
 store_name,city,monthly_sales_low,monthly_sales_high,monthly_rent,square_feet,sales_source,verification_status,exact_address
 Belle Plaine Tobacco,"Belle Plaine, MN",80000,89000,1500,1200,user-provided estimate,unverified,
 Coon Rapids Tobacco,"Coon Rapids, MN",32000,37000,3300,1200,user-provided estimate,unverified,"2740 Main St NW, Coon Rapids, MN"
+Jordan Tobacco,"Jordan, MN",90000,95000,1500,1200,user-provided estimate,unverified,
