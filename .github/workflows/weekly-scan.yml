@@ -60,13 +60,12 @@ jobs:
           fi
       - name: Automatically discover city retail and competitor leads
         run: python city_discovery.py
-      - name: Remove source extract from uploaded results
-        if: always()
-        run: rm -f data/minnesota.osm.pbf
       - name: Upload scan results
         if: always()
         uses: actions/upload-artifact@v6
         with:
           name: minnesota-vacancy-results
-          path: data/
+          path: |
+            data/
+            !data/minnesota.osm.pbf
           if-no-files-found: ignore
