@@ -21,7 +21,9 @@ STORES = {
 # B01001 male 21+ 010-025, female 21+ 034-049
 AGE21 = [f"B01001_{n:03d}E" for n in list(range(10,26))+list(range(34,50))]
 AGE65 = [f"B01001_{n:03d}E" for n in list(range(20,26))+list(range(44,50))]
-FIELDS = ["B01001_001E", "B19013_001E"] + AGE21
+FIELDS = list(dict.fromkeys(["B01001_001E", "B19013_001E"] + AGE21 + [f"B19001_{i:03d}E" for i in range(1, 18)] + [f"B03002_{i:03d}E" for i in (1, 3, 4, 6, 12)]))
+AGE_GROUPS = {"21_24": [10, 11, 34, 35], "25_34": [12, 13, 36, 37], "35_44": [14, 38], "45_54": [15, 16, 39, 40], "55_64": [17, 18, 19, 41, 42, 43], "65_plus": list(range(20, 26)) + list(range(44, 50))}
+INCOME_BRACKETS = {"under_35k": list(range(2, 8)), "35k_to_75k": list(range(8, 13)), "75k_to_125k": [13, 14], "125k_plus": [15, 16, 17]}
 
 def get_json(base, params):
     req = Request(base + "?" + urlencode(params), headers={"User-Agent":"MinnesotaLocationResearch/1.0"})
@@ -54,7 +56,14 @@ def collect_one(name, address, key):
             raise ValueError("suppressed estimate")
     except (ValueError,KeyError):
         return {"store":name,"address":address,"status":"acs_suppressed"}
+    age_groups = {label: sum(int(values[f"B01001_{i:03d}E"]) for i in indices) for label, indices in AGE_GROUPS.items()}
+    income_brackets = {label: sum(int(values[f"B19001_{i:03d}E"]) for i in indices) for label, indices in INCOME_BRACKETS.items()}
+    ethnicity = {label: int(values[f"B03002_{i:03d}E"]) for label, i in {"total": 1, "non_hispanic_white": 3, "non_hispanic_black": 4, "non_hispanic_asian": 6, "hispanic_any_race": 12}.items()}
     return {"store":name,"address":address,"status":"ok",
+            "age_groups_tract": age_groups,
+            "household_income_brackets_tract": income_brackets,
+            "households_tract": int(values["B19001_001E"]),
+            "ethnicity_descriptive_only_tract": ethnicity,
             "latitude":match["coordinates"]["y"],"longitude":match["coordinates"]["x"],
             "tract_fips":t["STATE"]+t["COUNTY"]+t["TRACT"],
             "population_tract":population,"age_21_plus_tract":adults,
