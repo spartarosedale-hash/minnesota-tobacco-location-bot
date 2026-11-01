@@ -15,7 +15,12 @@ ADULT_FIELDS = [f"B01001_{i:03d}E" for i in list(range(9, 26)) + list(range(33, 
 def fetch_json(url, params):
     response = requests.get(url, params=params, timeout=25, headers={"User-Agent":"MinnesotaSiteResearchBot/1.0"})
     response.raise_for_status()
-    return response.json()
+    try:
+        return response.json()
+    except ValueError as exc:
+        content_type = response.headers.get("Content-Type", "unknown")
+        preview = response.text[:160].replace("\\n", " ").replace("\\r", " ")
+        raise ValueError(f"Non-JSON response from {response.url.split('?')[0]} (HTTP {response.status_code}, Content-Type {content_type}): {preview!r}") from exc
 
 def lookup(address):
     data = fetch_json(GEOCODER, {"address":address,"benchmark":"Public_AR_Current","vintage":"Current_Current","format":"json"})
