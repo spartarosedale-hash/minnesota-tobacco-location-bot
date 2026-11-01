@@ -6,7 +6,7 @@ import requests
 from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
-from official_sources import for_city
+from official_sources import for_city,authority_for_city
 from licensing_tracker import licensing_snapshot
 from geofabrik_discovery import city_bounds,extract_candidates,discovery
 
@@ -79,6 +79,7 @@ def main():
         extract_error="Minnesota Geofabrik PBF download unavailable"
     for city in cities:
         result=discover_city(city)
+        result["licensing_authority"]=authority_for_city(city)
         result["official_licensing_sources"]=for_city(city)
         result["official_licensing_snapshot"]=licensing_snapshot(result["official_licensing_sources"])
         result["osm_discovery"]=discovery(city,extracted.get(city,[]),bound_errors.get(city) or extract_error)
