@@ -14,3 +14,6 @@ Research gaps: verified traffic and pedestrian volumes, nearby competitors' oper
 
 ## Later anecdotal observation (not verified)
 User heard owner say the store can hit $12,000 sales in a weekend day. Frequency, day, date, and whether this was an event-driven peak are unknown. Do not treat as a typical daily average or monthly actual. Earlier $125,000/month prediction remains recorded unchanged as pre-disclosure forecast. For a 30-day month with 22 weekdays and 8 weekend days at $12,000 each, weekday averages of $3k/$4k/$5k/$6k imply $162k/$184k/$206k/$228k respectively. These are conditional scenarios only.
+
+## Clarification
+The $12,000 figure specifically referred to **Sunday**, not both Saturday and Sunday. It is an owner statement relayed by the user, not verified POS data. It remains unclear whether it is a typical Sunday or a peak Sunday. Do not use the earlier two-weekend-days scenario as if observed.
