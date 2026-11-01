@@ -26,6 +26,10 @@ def lookup(address):
     geo = match.get("geographies", {})
     places = geo.get("Incorporated Places", []) + geo.get("Census Designated Places", [])
     if not places:
+        for key, entries in geo.items():
+            if "place" in key.lower() and isinstance(entries,list):
+                places.extend(entries)
+    if not places:
         raise ValueError("Address is outside a Census place; no city proxy available")
     place = places[0]
     return {"matched_address":match["matchedAddress"],"latitude":match["coordinates"]["y"],"longitude":match["coordinates"]["x"],"place":place["NAME"],"state":place["STATE"],"place_code":place["PLACE"]}
