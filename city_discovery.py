@@ -9,9 +9,10 @@ from source_verification import verify_candidates
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
 QUERIES=(
-    '"{city}" Minnesota tobacco retail license city county',
-    '"{city}" Minnesota smoke shop vape shop address',
-    '"{city}" Minnesota retail space for lease vacant',
+    '{city} MN tobacco shops vape stores',
+    '{city} Minnesota tobacco retailer license list',
+    '{city} MN retail commercial space for lease',
+    '{city} Minnesota city council tobacco license renewals',
 )
 def discover_city(city,fetch=requests.get):
     findings=[]
@@ -35,7 +36,10 @@ def discover_city(city,fetch=requests.get):
                                      "snippet":snippet[:400],"status":"UNVERIFIED_SEARCH_LEAD"})
         except (requests.RequestException,ET.ParseError) as exc:
             errors.append(query+": "+str(exc)[:160])
-    unique={r["url"]:r for r in findings}
+    unique={}
+    for row in findings:
+        if row["url"] not in unique:
+            unique[row["url"]]=row
     return {"city":city,"checked_at":datetime.now(timezone.utc).isoformat(),
             "leads":list(unique.values()),"errors":errors,
             "verification":"Search results are NOT confirmed businesses, vacancies or licenses"}
@@ -49,11 +53,18 @@ def main():
         result=discover_city(city)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
+        result["quality"]={"search_leads":len(result["leads"]),
+                           "classified_leads":sum(x["lead_type"]!="uncategorized_search_lead" for x in result["enrichment"]["candidates"]),
+                           "address_candidates":sum(bool(x["address_candidate"]) for x in result["enrichment"]["candidates"]),
+                           "geocoded_addresses":sum(x["latitude"] is not None for x in result["enrichment"]["candidates"]),
+                           "source_pages_read":sum(x["evidence_status"].startswith("SOURCE_READ") or x["evidence_status"].startswith("SOURCE_MENTIONS") for x in result["source_verification"]["candidates"]),
+                           "verified_operating_businesses":0,
+                           "ready_for_competitor_scoring":False}
         results.append(result)
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"enriched_candidates":len(r["enrichment"]["candidates"])} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
