@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Check location feature registry
-        run: python -m unittest -v test_location_feature_registry test_audit_location_evidence test_location_estimate test_census_location
+        run: python -m unittest -v test_location_feature_registry test_audit_location_evidence test_location_estimate test_census_location test_demographic_fields
       - name: Refresh Census demographic evidence
         id: census
         continue-on-error: true
