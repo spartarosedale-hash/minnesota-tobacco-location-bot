@@ -7,6 +7,7 @@ from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
 from official_sources import for_city
+from licensing_tracker import licensing_snapshot
 from geofabrik_discovery import city_bounds,extract_candidates,discovery
 
 ROOT=Path(__file__).resolve().parent
@@ -79,11 +80,13 @@ def main():
     for city in cities:
         result=discover_city(city)
         result["official_licensing_sources"]=for_city(city)
+        result["official_licensing_snapshot"]=licensing_snapshot(result["official_licensing_sources"])
         result["osm_discovery"]=discovery(city,extracted.get(city,[]),bound_errors.get(city) or extract_error)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
         result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
         result["quality"]={"official_licensing_sources":len(result["official_licensing_sources"]),
+                           "licensing_pages_with_count_candidates":sum(bool(s["evidence"]) for s in result["official_licensing_snapshot"]["sources"]),
                            "osm_business_candidates":len(result["osm_discovery"]["candidates"]),
                            "osm_status":result["osm_discovery"]["status"],
                            "osm_endpoint_attempts":len(result["osm_discovery"]["errors"])+(1 if result["osm_discovery"]["endpoint_used"] else 0),
