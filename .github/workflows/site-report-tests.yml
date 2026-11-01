@@ -1,0 +1,21 @@
+name: Site report unit tests
+on:
+  push:
+    paths:
+      - address_forecast.py
+      - traffic_and_competition.py
+      - site_report.py
+      - test_address_forecast.py
+      - test_traffic_and_competition.py
+      - .github/workflows/site-report-tests.yml
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python -m unittest test_address_forecast test_traffic_and_competition -v
