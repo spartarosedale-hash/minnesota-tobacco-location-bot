@@ -11,6 +11,8 @@ on:
       - 'test_page_extraction.py'
       - 'page_extraction.py'
       - 'lead_filter.py'
+      - 'official_sources.py'
+      - 'osm_city_discovery.py'
       - 'test_lead_filter.py'
       - 'test_source_verification.py'
       - 'test_lead_enrichment.py'
