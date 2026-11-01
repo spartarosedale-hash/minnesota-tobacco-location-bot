@@ -1,0 +1,7 @@
+store_name,address,city,state,monthly_sales_low,monthly_sales_high,monthly_rent_usd,store_sqft,role,source
+Belle Plaine Tobacco,"109 N Meridian St, Belle Plaine, MN 56011",Belle Plaine,MN,80000,89000,1500,1200,training,user_reported_2026_10_31
+Litchfield Tobacco,"231 N Sibley Ave, Litchfield, MN 55355",Litchfield,MN,90000,100000,1900,1200,blind_validation,user_reported_2026_10_31
+Zimmerman Tobacco,"26219 Fremont Dr Ste 101, Zimmerman, MN 55398",Zimmerman,MN,265000,265000,,,blind_validation,user_reported_2026_10_31
+Coon Rapids Tobacco,"2740 Main St NW, Coon Rapids, MN",Coon Rapids,MN,32000,37000,3300,1200,training,user_reported_2026_10_31
+Jordan Tobacco,,Jordan,MN,90000,95000,1500,1200,training,user_reported_2026_10_31
+New Prague,,New Prague,MN,45000,55000,1300,1200,training,user_reported_2026_10_31
