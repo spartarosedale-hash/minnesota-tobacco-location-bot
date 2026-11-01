@@ -10,11 +10,11 @@ from urllib.request import urlopen
 
 from drive_time_areas import geocode, STORES
 
-LAYER = "https://dotapp9.dot.state.mn.us/egis12/rest/services/TFA/MNDOT_TRAFFIC_DATA/MapServer/6"
+LAYER = "https://services6.arcgis.com/nAAX2HQeTkcM7MyI/arcgis/rest/services/AADT/FeatureServer/0"
 
 def nearby_segments(lon, lat, radius_m=1500):
     params = {
-        "f": "geojson", "where": "1=1", "geometry": f"{lon},{lat}",
+        "f": "json", "where": "1=1", "geometry": f"{lon},{lat}",
         "geometryType": "esriGeometryPoint", "inSR": "4326",
         "spatialRel": "esriSpatialRelIntersects", "distance": radius_m,
         "units": "esriSRUnit_Meter", "outFields": "*", "returnGeometry": "true",
@@ -23,7 +23,7 @@ def nearby_segments(lon, lat, radius_m=1500):
     with urlopen(LAYER + "/query?" + urlencode(params), timeout=60) as response:
         result = json.load(response)
     if "error" in result:
-        raise RuntimeError("MnDOT GIS returned an error")
+        raise RuntimeError("MnDOT GIS returned an error: " + str(result["error"]))
     return result.get("features", [])
 
 def collect(stores=STORES):
@@ -43,7 +43,8 @@ def collect(stores=STORES):
             }
         except Exception as exc:
             results[name] = {"status": "source_error", "address": address,
-                             "error_type": type(exc).__name__}
+                             "error_type": type(exc).__name__, "error_detail": str(exc)[:500]}
+            print(f"::error title=MnDOT collection failed for {name}::{type(exc).__name__}: {str(exc)[:500]}")
     return results
 
 def main():
