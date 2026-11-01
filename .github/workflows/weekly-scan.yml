@@ -2,6 +2,15 @@ name: Minnesota Retail Vacancy Weekly Scan
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/weekly-scan.yml'
+      - 'city_discovery.py'
+      - 'lead_enrichment.py'
+      - 'source_verification.py'
+      - 'test_source_verification.py'
+      - 'test_lead_enrichment.py'
+      - 'research_cities.csv'
   schedule:
     - cron: '0 14 * * 1'
 
@@ -21,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Test automated lead enrichment
-        run: python -m unittest test_lead_enrichment -v
+        run: python -m unittest test_lead_enrichment test_source_verification -v
       - name: Run vacancy scanner
         run: python bot.py
       - name: Automatically discover city retail and competitor leads
