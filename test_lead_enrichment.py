@@ -12,7 +12,7 @@ class EnrichmentTests(unittest.TestCase):
         result=enrich(leads,"Zimmerman",fetch=fetch)
         row=result["candidates"][0]
         self.assertEqual(row["latitude"],45.4)
-        self.assertEqual(row["verification"],"UNVERIFIED_SEARCH_SNIPPET")
+        self.assertEqual(row["verification"],"UNVERIFIED_SEARCH_LEAD")
         self.assertIn("NOT_BUSINESS_VERIFICATION",row["geocode_status"])
     def test_no_address_does_not_invent_coordinates(self):
         result=enrich([{"title":"Tobacco shop","snippet":"Zimmerman","url":"https://example.org"}],"Zimmerman")
