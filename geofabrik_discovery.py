@@ -5,6 +5,7 @@ All records are unverified. No live bulk downloads from OSM's map API.
 """
 from pathlib import Path
 import requests
+from specialty_shop_filter import specialty_match
 
 SOURCE="https://download.geofabrik.de/north-america/us/minnesota-latest.osm.pbf"
 SHOPS={"tobacco","e-cigarette","convenience"}
@@ -29,7 +30,8 @@ def extract_candidates(path,bounds):
         def record(self,obj,kind,lat,lon):
             if lat is None or lon is None:return
             tags=obj.tags
-            if tags.get("shop") not in SHOPS or not tags.get("name"):return
+            match_reason=specialty_match(tags)
+            if not match_reason:return
             for city,(south,north,west,east) in bounds.items():
                 if not(south<=lat<=north and west<=lon<=east):continue
                 key=(kind,int(obj.id))
@@ -39,6 +41,7 @@ def extract_candidates(path,bounds):
                     "address_candidate":" ".join(filter(None,[tags.get("addr:housenumber"),tags.get("addr:street")])) or None,
                     "latitude":lat,"longitude":lon,"source":"Geofabrik Minnesota OpenStreetMap extract",
                     "source_url":SOURCE,"osm_id":int(obj.id),"osm_type":kind,
+                    "match_reason":match_reason,
                     "status":"UNVERIFIED_OSM_BUSINESS_CANDIDATE"})
         def node(self,n):
             if n.location.valid():self.record(n,"node",n.location.lat,n.location.lon)
