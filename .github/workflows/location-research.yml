@@ -19,11 +19,7 @@ jobs:
         env:
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
         run: |
-          if [ -z "$CENSUS_API_KEY" ]; then
-            echo "CENSUS_API_KEY not configured: demographic refresh skipped."
-          else
-            python collect_location_demographics.py --output research_demographics.json
-          fi
+          python collect_location_demographics.py --output research_demographics.json
       - name: Collect nearby MnDOT traffic segments
         run: python collect_mndot_traffic.py --output research_traffic.json
       - name: Upload research artifact
