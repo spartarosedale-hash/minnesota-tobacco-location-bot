@@ -1,0 +1,9 @@
+source_id,source_name,url,feature_groups,access_type,priority,verification_status
+mndot_tdms,MnDOT Traffic Viewer,https://www.dot.state.mn.us/traffic/data/tdms.html,traffic_hourly_aadt,interactive_and_exports,high,official_source_verified
+mndot_products,MnDOT Traffic Data Products,https://www.dot.state.mn.us/traffic/data/data-products.html,traffic_gis_history,downloads_and_maps,high,official_source_verified
+mn_geospatial,Minnesota Geospatial Commons,https://gis.data.mn.gov/,roads_parcels_land_use_lakes,gis_download_or_service,high,official_source_verified
+census_api,Census Data API,https://api.census.gov/data.html,age_income_housing_employment,api,high,official_source_verified
+census_acs,Census ACS Data Tools,https://www.census.gov/programs-surveys/acs/data/data-tools-chart.html,block_group_demographics,api_and_download,high,official_source_verified
+metro_parcels,MetroGIS Regional Parcel Dataset,https://metrogis.org/how-do-i-get/parcel-data/,parcel_boundaries_and_property_context,download,high,official_source_verified
+mn_parcels,Minnesota Parcel Maps,https://mn.gov/mngeo/gis-data-and-maps/info-by-topic/land-ownership/property.jsp,county_property_information,maps_and_downloads,medium,official_source_verified
+mn_liquor,Minnesota DPS Alcohol License Public Search,https://app.dps.mn.gov/AGEDIS5/DataAccess/pages/Welcome.html,liquor_business_presence,interactive_search,high,official_source_verified
