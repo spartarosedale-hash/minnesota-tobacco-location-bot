@@ -3,6 +3,7 @@ import csv,json,xml.etree.ElementTree as ET
 from datetime import datetime,timezone
 from pathlib import Path
 import requests
+from lead_enrichment import enrich
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -42,11 +43,15 @@ def main():
     city_file=ROOT/"research_cities.csv"
     with city_file.open(encoding="utf-8-sig",newline="") as f:
         cities=[r["city"].strip() for r in csv.DictReader(f) if r.get("city","").strip()]
-    results=[discover_city(city) for city in cities]
+    results=[]
+    for city in cities:
+        result=discover_city(city)
+        result["enrichment"]=enrich(result["leads"],city)
+        results.append(result)
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"])} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"enriched_candidates":len(r["enrichment"]["candidates"])} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
