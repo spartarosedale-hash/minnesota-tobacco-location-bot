@@ -18,11 +18,11 @@ STORES = {
     "Maple Plain Smoke Shop": "5020 US-12 Ste 2, Maple Plain, MN 55359",
     "Litchfield Tobacco": "231 N Sibley Ave, Litchfield, MN 55355",
 }
-# B01001 male 21+ 010-025, female 21+ 034-049
-AGE21 = [f"B01001_{n:03d}E" for n in list(range(10,26))+list(range(34,50))]
+# B01001 male 21+ 009-025, female 21+ 033-049
+AGE21 = [f"B01001_{n:03d}E" for n in list(range(9,26))+list(range(33,50))]
 AGE65 = [f"B01001_{n:03d}E" for n in list(range(20,26))+list(range(44,50))]
 FIELDS = list(dict.fromkeys(["B01001_001E", "B19013_001E"] + AGE21 + [f"B19001_{i:03d}E" for i in range(1, 18)] + [f"B03002_{i:03d}E" for i in (1, 3, 4, 6, 12)]))
-AGE_GROUPS = {"21_24": [10, 11, 34, 35], "25_34": [12, 13, 36, 37], "35_44": [14, 38], "45_54": [15, 16, 39, 40], "55_64": [17, 18, 19, 41, 42, 43], "65_plus": list(range(20, 26)) + list(range(44, 50))}
+AGE_GROUPS = {"21_24": [9, 10, 33, 34], "25_34": [11, 12, 35, 36], "35_44": [13, 14, 37, 38], "45_54": [15, 16, 39, 40], "55_64": [17, 18, 19, 41, 42, 43], "65_plus": list(range(20, 26)) + list(range(44, 50))}
 INCOME_BRACKETS = {"under_35k": list(range(2, 8)), "35k_to_75k": list(range(8, 13)), "75k_to_125k": [13, 14], "125k_plus": [15, 16, 17]}
 
 def get_json(base, params):
@@ -41,12 +41,15 @@ def collect_one(name, address, key):
     if not tract:
         return {"store":name,"address":address,"status":"tract_unavailable"}
     t=tract[0]
-    params={"get":",".join(FIELDS),"for":"tract:"+t["TRACT"],
-            "in":f"state:{t['STATE']} county:{t['COUNTY']}",**({"key":key} if key else {})}
-    data=get_json(ACS,params)
-    if len(data)<2:
-        return {"store":name,"address":address,"status":"acs_missing"}
-    values=dict(zip(data[0],data[1]))
+    values = {}
+    # ACS API accepts at most 50 variables per request; merge smaller batches.
+    for start in range(0, len(FIELDS), 40):
+        params={"get":",".join(FIELDS[start:start+40]),"for":"tract:"+t["TRACT"],
+                "in":f"state:{t['STATE']} county:{t['COUNTY']}",**({"key":key} if key else {})}
+        data=get_json(ACS,params)
+        if len(data)<2:
+            return {"store":name,"address":address,"status":"acs_missing"}
+        values.update(dict(zip(data[0],data[1])))
     try:
         population=int(values["B01001_001E"])
         adults=sum(int(values[k]) for k in AGE21)
