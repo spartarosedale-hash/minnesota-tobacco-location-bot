@@ -23,7 +23,7 @@ def build(address,competitors=None,traffic_file=None,enable_besttime=False,googl
     else:
         result["competition"]={"status":"not_assessed","reason":"No verified competitor geolocation dataset provided"}
     try:
-        city=result["site"].get("city") or result["site"].get("place_name") or address.split(",")[1].strip()
+        city=result["site"].get("place") or address.split(",")[1].strip()
         result["competitor_registry"]=registry_competitors(lat,lon,city)
     except Exception as exc:
         result["competitor_registry"]={"status":"unavailable","reason":str(exc)[:250]}
