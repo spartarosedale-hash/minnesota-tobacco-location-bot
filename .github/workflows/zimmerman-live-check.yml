@@ -24,6 +24,8 @@ jobs:
       - name: Test free source modules
         run: python -m unittest test_address_forecast test_traffic_and_competition test_google_popular_times -v
       - name: Check real Zimmerman sources
+        env:
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
         run: python zimmerman_live_check.py
       - name: Save result even on failure
         if: always()
