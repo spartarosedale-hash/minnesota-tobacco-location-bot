@@ -10,7 +10,7 @@ from urllib.request import urlopen
 
 from drive_time_areas import geocode, STORES
 
-LAYER = "https://services6.arcgis.com/nAAX2HQeTkcM7MyI/arcgis/rest/services/AADT/FeatureServer/0"
+LAYER = "https://dotapp9.dot.state.mn.us/egis12/rest/services/TFA/MNDOT_TRAFFIC_DATA/MapServer/6"
 
 def nearby_segments(lon, lat, radius_m=1500):
     params = {
