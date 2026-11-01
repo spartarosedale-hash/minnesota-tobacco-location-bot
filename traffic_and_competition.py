@@ -6,7 +6,7 @@ import csv
 import math
 import requests
 
-AADT_URL="https://dotapp9.dot.state.mn.us/egis12/rest/services/TFA/MNDOT_TRAFFIC_DATA/MapServer/6/query"
+AADT_URL="https://services.arcgis.com/rD2ylXRs80UroD90/ArcGIS/rest/services/MnDOT_AADTWithCommercial/FeatureServer/43/query"
 
 def miles(lat1,lon1,lat2,lon2):
     a1,a2=math.radians(lat1),math.radians(lat2)
@@ -19,7 +19,7 @@ def nearby_aadt(lat,lon,radius_meters=750):
     params={"f":"json","geometry":f"{lon},{lat}","geometryType":"esriGeometryPoint",
             "inSR":"4326","spatialRel":"esriSpatialRelIntersects",
             "distance":radius_meters,"units":"esriSRUnit_Meter",
-            "outFields":"CURRENT_VOLUME,CURRENT_YEAR,SEQUENCE_NUMBER",
+            "outFields":"AADT_CURRENT_VOLUME,AADT_CURRENT_YEAR,AADT_ROUTE_LABEL,AADT_LOCATION_DESCRIPTION",
             "returnGeometry":"false"}
     response=requests.get(AADT_URL,params=params,timeout=25)
     response.raise_for_status()
@@ -29,9 +29,9 @@ def nearby_aadt(lat,lon,radius_meters=750):
     found=[]
     for feature in payload.get("features",[]):
         attrs=feature["attributes"]
-        if isinstance(attrs.get("CURRENT_VOLUME"),(int,float)) and attrs["CURRENT_VOLUME"]>0:
-            found.append({"aadt":attrs["CURRENT_VOLUME"],"year":attrs.get("CURRENT_YEAR"),"segment":attrs.get("SEQUENCE_NUMBER")})
-    return {"nearby_segments":found,"search_radius_meters":radius_meters,
+        if isinstance(attrs.get("AADT_CURRENT_VOLUME"),(int,float)) and attrs["AADT_CURRENT_VOLUME"]>0:
+            found.append({"aadt":attrs["CURRENT_VOLUME"],"year":attrs.get("AADT_CURRENT_YEAR"),"segment":attrs.get("AADT_ROUTE_LABEL"),"road_description":attrs.get("AADT_LOCATION_DESCRIPTION")})
+    return {"nearby_segments":found,"search_radius_meters":radius_meters,"source_url":AADT_URL,"source_note":"Public ArcGIS MnDOT-derived layer, last data edit June 2024; not guaranteed current official AADT",
             "caution":"Nearby road segments only; frontage segment not yet verified"}
 
 def competitor_summary(lat,lon,csv_path):
