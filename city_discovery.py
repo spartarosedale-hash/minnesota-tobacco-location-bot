@@ -7,7 +7,8 @@ from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
 from official_sources import for_city
-from osm_city_discovery import discover_osm
+from osm_extract import extract_pbf,discovery_from_extract
+import os
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -56,10 +57,20 @@ def main():
     with city_file.open(encoding="utf-8-sig",newline="") as f:
         cities=[r["city"].strip() for r in csv.DictReader(f) if r.get("city","").strip()]
     results=[]
+    pbf=ROOT/"data"/"minnesota.osm.pbf"
+    extracted={}
+    extract_error=None
+    if pbf.exists():
+        try:
+            extracted=extract_pbf(pbf,cities)
+        except (ImportError,OSError,RuntimeError,ValueError) as exc:
+            extract_error=str(exc)[:200]
+    else:
+        extract_error="Minnesota PBF download missing"
     for city in cities:
         result=discover_city(city)
         result["official_licensing_sources"]=for_city(city)
-        result["osm_discovery"]=discover_osm(city)
+        result["osm_discovery"]=discovery_from_extract(city,extracted.get(city,[]),extract_error)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
         result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
@@ -80,7 +91,7 @@ def main():
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"official_pages_read":r["quality"]["official_pages_read"],"osm_business_candidates":r["quality"]["osm_business_candidates"],"osm_status":r["quality"]["osm_status"],"osm_endpoint_attempts":r["quality"]["osm_endpoint_attempts"],"page_address_candidates":r["quality"]["page_address_candidates"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"official_pages_read":r["quality"]["official_pages_read"],"osm_business_candidates":r["quality"]["osm_business_candidates"],"osm_status":r["quality"]["osm_status"],"osm_coverage":r["osm_discovery"]["coverage"],"osm_endpoint_attempts":r["quality"]["osm_endpoint_attempts"],"page_address_candidates":r["quality"]["page_address_candidates"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
