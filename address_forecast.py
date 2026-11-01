@@ -40,14 +40,24 @@ def lookup(address):
     return {"matched_address":match["matchedAddress"],"latitude":match["coordinates"]["y"],"longitude":match["coordinates"]["x"],"place":place["NAME"],"state":place["STATE"],"place_code":place["PLACE"]}
 
 def demographics(site):
-    params = {"get":",".join(["NAME","B01001_001E","B19013_001E"]+ADULT_FIELDS),"for":"place:"+site["place_code"],"in":"state:"+site["state"]}
-    if os.environ.get("CENSUS_API_KEY"):
-        params["key"] = os.environ["CENSUS_API_KEY"]
-    rows = fetch_json(ACS, params)
+    # The Census API permits a maximum of 50 variables per request. Use two
+    # smaller calls and avoid making a public API key mandatory.
+    base = {"for": "place:" + site["place_code"], "in": "state:" + site["state"]}
+    key = os.environ.get("CENSUS_API_KEY", "").strip()
+    if key:
+        base["key"] = key
+    def query(fields):
+        params = dict(base, get=",".join(fields))
+        return fetch_json(ACS, params)
+    rows = query(["NAME", "B01001_001E", "B19013_001E"])
     if len(rows) < 2:
         raise ValueError("No ACS records for place")
     record = dict(zip(rows[0], rows[1]))
-    adults = sum(int(record[f]) for f in ADULT_FIELDS)
+    age_rows = query(ADULT_FIELDS)
+    if len(age_rows) < 2:
+        raise ValueError("No ACS age records for place")
+    ages = dict(zip(age_rows[0], age_rows[1]))
+    adults = sum(int(ages[f]) for f in ADULT_FIELDS)
     population = int(record["B01001_001E"])
     if not 0 < adults <= population:
         raise ValueError("ACS adult counts failed validation")
