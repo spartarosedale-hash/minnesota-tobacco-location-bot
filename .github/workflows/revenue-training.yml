@@ -1,0 +1,29 @@
+name: Revenue model training checks
+on:
+  push:
+    paths:
+      - train_revenue_model.py
+      - training_stores.csv
+      - test_train_revenue_model.py
+      - .github/workflows/revenue-training.yml
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install numpy scikit-learn
+      - run: python -m unittest test_train_revenue_model -v
+      - name: Evaluate only when enough training stores exist
+        run: |
+          python - <<'PY'
+          from train_revenue_model import load,train
+          n=len(load('training_stores.csv'))
+          if n>=10:
+              print(train('training_stores.csv'))
+          else:
+              print(f'WAITING FOR TRAINING DATA: {n}/10 complete independent stores. No model trained.')
+          PY
