@@ -5,8 +5,9 @@ import argparse,json
 from address_forecast import forecast
 from traffic_and_competition import nearby_aadt,competitor_summary
 from competitor_traffic import scan
+from besttime_connector import fetch_nearby
 
-def build(address,competitors=None,traffic_file=None):
+def build(address,competitors=None,traffic_file=None,enable_besttime=False):
     result=forecast(address)
     lat=result["site"]["latitude"];lon=result["site"]["longitude"]
     try:
@@ -23,6 +24,11 @@ def build(address,competitors=None,traffic_file=None):
         except Exception as exc: result["nearby_store_traffic"]={"status":"unavailable","reason":str(exc)[:250]}
     else:
         result["nearby_store_traffic"]={"status":"no_measured_visit_data","warning":"No verified competitor visit dataset supplied"}
+    if enable_besttime:
+        try: result["nearby_busyness"]=fetch_nearby(lat,lon,enable_api=True)
+        except Exception as exc: result["nearby_busyness"]={"status":"unavailable","reason":str(exc)[:250]}
+    else:
+        result["nearby_busyness"]={"status":"disabled","reason":"Use --enable-besttime to permit provider API calls"}
     result["prediction_confidence"]="NOT CALIBRATED"
     return result
 
@@ -31,5 +37,6 @@ if __name__=="__main__":
     p.add_argument("address")
     p.add_argument("--competitors")
     p.add_argument("--competitor-traffic")
+    p.add_argument("--enable-besttime",action="store_true")
     args=p.parse_args()
-    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic),indent=2))
+    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,args.enable_besttime),indent=2))
