@@ -40,7 +40,7 @@ def collect_one(name, address, key):
         return {"store":name,"address":address,"status":"tract_unavailable"}
     t=tract[0]
     params={"get":",".join(FIELDS),"for":"tract:"+t["TRACT"],
-            "in":f"state:{t['STATE']} county:{t['COUNTY']}","key":key}
+            "in":f"state:{t['STATE']} county:{t['COUNTY']}",**({"key":key} if key else {})}
     data=get_json(ACS,params)
     if len(data)<2:
         return {"store":name,"address":address,"status":"acs_missing"}
@@ -68,8 +68,6 @@ def main():
     parser.add_argument("--output",default="research_demographics.json")
     args=parser.parse_args()
     key=os.environ.get("CENSUS_API_KEY")
-    if not key:
-        parser.error("CENSUS_API_KEY is required; request one from census.gov")
     results=[]
     for name,address in STORES.items():
         try:
