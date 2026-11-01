@@ -7,8 +7,7 @@ from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
 from official_sources import for_city
-from osm_extract import extract_pbf,discovery_from_extract
-import os
+from osm_city_map import discover_city_map
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -57,20 +56,10 @@ def main():
     with city_file.open(encoding="utf-8-sig",newline="") as f:
         cities=[r["city"].strip() for r in csv.DictReader(f) if r.get("city","").strip()]
     results=[]
-    pbf=ROOT/"data"/"minnesota.osm.pbf"
-    extracted={}
-    extract_error=None
-    if pbf.exists():
-        try:
-            extracted=extract_pbf(pbf,cities)
-        except (ImportError,OSError,RuntimeError,ValueError) as exc:
-            extract_error=str(exc)[:200]
-    else:
-        extract_error="Minnesota PBF download missing"
     for city in cities:
         result=discover_city(city)
         result["official_licensing_sources"]=for_city(city)
-        result["osm_discovery"]=discovery_from_extract(city,extracted.get(city,[]),extract_error)
+        result["osm_discovery"]=discover_city_map(city)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
         result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
