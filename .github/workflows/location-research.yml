@@ -1,0 +1,33 @@
+name: Location research refresh
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 13 * * 1"
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check location feature registry
+        run: python -m unittest -v test_location_feature_registry
+      - name: Refresh Census demographic evidence
+        env:
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+        run: |
+          if [ -z "$CENSUS_API_KEY" ]; then
+            echo "CENSUS_API_KEY not configured: demographic refresh skipped."
+          else
+            python collect_location_demographics.py --output research_demographics.json
+          fi
+      - name: Upload research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: location-research
+          path: research_demographics.json
+          if-no-files-found: ignore
