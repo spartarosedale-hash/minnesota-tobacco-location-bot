@@ -3,6 +3,7 @@ import re
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
+from page_extraction import extract
 
 def verify_candidates(candidates,fetch=requests.get,max_pages=12):
     results=[]
@@ -24,6 +25,7 @@ def verify_candidates(candidates,fetch=requests.get,max_pages=12):
             if "html" not in response.headers.get("Content-Type","").lower():
                 row["evidence_status"]="NON_HTML_SOURCE"
             else:
+                row["page_address_candidates"]=extract(response.text[:300000],row.get("city",""))
                 soup=BeautifulSoup(response.text[:300000],"html.parser")
                 for element in soup(["script","style","nav","footer"]): element.decompose()
                 body=" ".join(soup.stripped_strings).casefold()
