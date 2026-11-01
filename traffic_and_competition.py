@@ -30,7 +30,7 @@ def nearby_aadt(lat,lon,radius_meters=750):
     for feature in payload.get("features",[]):
         attrs=feature["attributes"]
         if isinstance(attrs.get("AADT_CURRENT_VOLUME"),(int,float)) and attrs["AADT_CURRENT_VOLUME"]>0:
-            found.append({"aadt":attrs["CURRENT_VOLUME"],"year":attrs.get("AADT_CURRENT_YEAR"),"segment":attrs.get("AADT_ROUTE_LABEL"),"road_description":attrs.get("AADT_LOCATION_DESCRIPTION")})
+            found.append({"aadt":attrs["AADT_CURRENT_VOLUME"],"year":attrs.get("AADT_CURRENT_YEAR"),"segment":attrs.get("AADT_ROUTE_LABEL"),"road_description":attrs.get("AADT_LOCATION_DESCRIPTION")})
     return {"nearby_segments":found,"search_radius_meters":radius_meters,"source_url":AADT_URL,"source_note":"Public ArcGIS MnDOT-derived layer, last data edit June 2024; not guaranteed current official AADT",
             "caution":"Nearby road segments only; frontage segment not yet verified"}
 
