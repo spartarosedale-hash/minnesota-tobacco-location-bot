@@ -9,7 +9,7 @@ class TestEnrichment(unittest.TestCase):
     @patch("traffic_and_competition.requests.get")
     def test_aadt(self,get):
         response=Mock()
-        response.json.return_value={"features":[{"attributes":{"CURRENT_VOLUME":8400,"CURRENT_YEAR":2025,"SEQUENCE_NUMBER":"A"}}]}
+        response.json.return_value={"features":[{"attributes":{"AADT_CURRENT_VOLUME":8400,"AADT_CURRENT_YEAR":2024,"AADT_ROUTE_LABEL":"A"}}]}
         get.return_value=response
         result=nearby_aadt(45,-94)
         self.assertEqual(result["nearby_segments"][0]["aadt"],8400)
