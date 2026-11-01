@@ -7,8 +7,9 @@ from traffic_and_competition import nearby_aadt,competitor_summary
 from competitor_traffic import scan
 from besttime_connector import fetch_nearby
 from free_places import discover
+from google_popular_times import analyze as analyze_google_popular_times
 
-def build(address,competitors=None,traffic_file=None,enable_besttime=False):
+def build(address,competitors=None,traffic_file=None,enable_besttime=False,google_popular_times_file=None):
     result=forecast(address)
     lat=result["site"]["latitude"];lon=result["site"]["longitude"]
     try:
@@ -32,6 +33,11 @@ def build(address,competitors=None,traffic_file=None,enable_besttime=False):
         result["nearby_busyness"]={"status":"disabled","reason":"Use --enable-besttime to permit provider API calls"}
     try: result["free_nearby_places"]=discover(lat,lon)
     except Exception as exc: result["free_nearby_places"]={"status":"unavailable","reason":str(exc)[:250]}
+    if google_popular_times_file:
+        try: result["google_popular_times"]=analyze_google_popular_times(google_popular_times_file)
+        except Exception as exc: result["google_popular_times"]={"status":"unavailable","reason":str(exc)[:250]}
+    else:
+        result["google_popular_times"]={"status":"no_observations","reason":"Google has no official Popular times API; supply observed chart data"}
     result["prediction_confidence"]="NOT CALIBRATED"
     return result
 
@@ -41,5 +47,6 @@ if __name__=="__main__":
     p.add_argument("--competitors")
     p.add_argument("--competitor-traffic")
     p.add_argument("--enable-besttime",action="store_true")
+    p.add_argument("--google-popular-times")
     args=p.parse_args()
-    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,args.enable_besttime),indent=2))
+    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,args.enable_besttime,args.google_popular_times),indent=2))
