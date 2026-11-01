@@ -17,3 +17,6 @@ User heard owner say the store can hit $12,000 sales in a weekend day. Frequency
 
 ## Clarification
 The $12,000 figure specifically referred to **Sunday**, not both Saturday and Sunday. It is an owner statement relayed by the user, not verified POS data. It remains unclear whether it is a typical Sunday or a peak Sunday. Do not use the earlier two-weekend-days scenario as if observed.
+
+## Latest correction (supersedes Sunday clarification)
+The owner-reported $12,000 sales day was **Friday**, NOT Sunday. Frequency and whether it was a peak remain unknown. This is secondhand and unverified; do not treat as an average Friday or extrapolate to monthly sales.
