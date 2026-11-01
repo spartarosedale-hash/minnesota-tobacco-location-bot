@@ -7,7 +7,7 @@ from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
 from official_sources import for_city
-from osm_city_map import discover_city_map
+from geofabrik_discovery import city_bounds,extract_candidates,discovery
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -56,10 +56,27 @@ def main():
     with city_file.open(encoding="utf-8-sig",newline="") as f:
         cities=[r["city"].strip() for r in csv.DictReader(f) if r.get("city","").strip()]
     results=[]
+    pbf=ROOT/"data"/"minnesota.osm.pbf"
+    bounds={}
+    bound_errors={}
+    for city in cities:
+        try:
+            bounds[city]=city_bounds(city)
+        except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
+            bound_errors[city]=str(exc)[:200]
+    extracted={}
+    extract_error=None
+    if pbf.exists() and pbf.stat().st_size>1000000:
+        try:
+            extracted=extract_candidates(pbf,bounds)
+        except (ImportError,OSError,RuntimeError,ValueError) as exc:
+            extract_error=str(exc)[:200]
+    else:
+        extract_error="Minnesota Geofabrik PBF download unavailable"
     for city in cities:
         result=discover_city(city)
         result["official_licensing_sources"]=for_city(city)
-        result["osm_discovery"]=discover_city_map(city)
+        result["osm_discovery"]=discovery(city,extracted.get(city,[]),bound_errors.get(city) or extract_error)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
         result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
