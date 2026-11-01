@@ -45,4 +45,4 @@ if __name__=="__main__":
     # Paid API calls intentionally unavailable in free-only mode.
     p.add_argument("--google-popular-times")
     args=p.parse_args()
-    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,args.enable_besttime,args.google_popular_times),indent=2))
+    print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,False,args.google_popular_times),indent=2))
