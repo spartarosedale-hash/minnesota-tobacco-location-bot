@@ -12,8 +12,8 @@ from urllib.request import urlopen
 
 GEOCODER = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress"
 ACS = "https://api.census.gov/data/2024/acs/acs5"
-# ACS B01001: male 21+ = 009..025; female 21+ = 033..049.
-ADULT_CODES = [f"B01001_{i:03d}E" for i in list(range(9,26))+list(range(33,50))]
+# ACS B01001: male 21+ = 010..025; female 21+ = 034..049.
+ADULT_CODES = [f"B01001_{i:03d}E" for i in list(range(10,26))+list(range(34,50))]
 
 def fetch_json(url, params, opener=urlopen):
     with opener(url+"?"+urlencode(params), timeout=20) as response:
