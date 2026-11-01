@@ -16,6 +16,8 @@ on:
       - 'osm_extract.py'
       - 'osm_city_map.py'
       - 'geofabrik_discovery.py'
+      - 'specialty_shop_filter.py'
+      - 'test_specialty_shop_filter.py'
       - 'test_osm_city_discovery.py'
       - 'test_lead_filter.py'
       - 'test_source_verification.py'
@@ -40,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt 'osmium>=4,<5'
       - name: Test automated lead enrichment
-        run: python -m unittest test_lead_enrichment test_source_verification test_page_extraction test_lead_filter test_osm_city_discovery -v
+        run: python -m unittest test_lead_enrichment test_source_verification test_page_extraction test_lead_filter test_osm_city_discovery test_specialty_shop_filter -v
       - name: Run vacancy scanner
         run: python bot.py
       - name: Cache weekly Minnesota OSM dataset
