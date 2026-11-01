@@ -1,5 +1,10 @@
 name: Zimmerman free live source validation
 on:
+  push:
+    paths:
+      - .github/workflows/zimmerman-live-check.yml
+      - zimmerman_live_check.py
+      - site_report.py
   workflow_dispatch:
   schedule:
     - cron: '15 14 * * 1'
