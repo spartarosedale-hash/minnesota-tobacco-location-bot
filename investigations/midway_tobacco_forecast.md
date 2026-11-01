@@ -11,3 +11,6 @@ Negative hypothesis: other tobacco retailers listed along University Avenue; cur
 Source: https://midwaytobaccoandvapor.mybusiness.site/
 
 Research gaps: verified traffic and pedestrian volumes, nearby competitors' operating status, age-21+ driving-area population, rent, shop area, transaction count, product mix and seasonality. Do not treat this estimate as a trained-model result or actual revenue.
+
+## Later anecdotal observation (not verified)
+User heard owner say the store can hit $12,000 sales in a weekend day. Frequency, day, date, and whether this was an event-driven peak are unknown. Do not treat as a typical daily average or monthly actual. Earlier $125,000/month prediction remains recorded unchanged as pre-disclosure forecast. For a 30-day month with 22 weekdays and 8 weekend days at $12,000 each, weekday averages of $3k/$4k/$5k/$6k imply $162k/$184k/$206k/$228k respectively. These are conditional scenarios only.
