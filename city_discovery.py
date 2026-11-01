@@ -6,6 +6,7 @@ import requests
 from lead_enrichment import enrich
 from source_verification import verify_candidates
 from lead_filter import relevant
+from official_sources import for_city
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -56,9 +57,14 @@ def main():
     results=[]
     for city in cities:
         result=discover_city(city)
+        result["official_licensing_sources"]=for_city(city)
         result["enrichment"]=enrich(result["leads"],city)
         result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
-        result["quality"]={"search_leads":len(result["leads"]),
+        result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
+        result["quality"]={"official_licensing_sources":len(result["official_licensing_sources"]),
+                           "official_pages_read":sum(x.get("source_checked",False) for x in result["official_source_verification"]["candidates"]),
+                           "page_address_candidates":sum(len(x.get("page_address_candidates",[])) for x in result["source_verification"]["candidates"]),
+                           "search_leads":len(result["leads"]),
                            "classified_leads":sum(x["lead_type"]!="uncategorized_search_lead" for x in result["enrichment"]["candidates"]),
                            "address_candidates":sum(bool(x["address_candidate"]) for x in result["enrichment"]["candidates"]),
                            "geocoded_addresses":sum(x["latitude"] is not None for x in result["enrichment"]["candidates"]),
@@ -69,7 +75,7 @@ def main():
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"official_pages_read":r["quality"]["official_pages_read"],"page_address_candidates":r["quality"]["page_address_candidates"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
