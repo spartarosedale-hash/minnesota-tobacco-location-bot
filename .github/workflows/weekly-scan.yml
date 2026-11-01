@@ -15,6 +15,7 @@ on:
       - 'osm_city_discovery.py'
       - 'osm_extract.py'
       - 'osm_city_map.py'
+      - 'geofabrik_discovery.py'
       - 'test_osm_city_discovery.py'
       - 'test_lead_filter.py'
       - 'test_source_verification.py'
@@ -37,13 +38,31 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt 'osmium>=4,<5'
       - name: Test automated lead enrichment
         run: python -m unittest test_lead_enrichment test_source_verification test_page_extraction test_lead_filter test_osm_city_discovery -v
       - name: Run vacancy scanner
         run: python bot.py
+      - name: Cache weekly Minnesota OSM dataset
+        uses: actions/cache@v4
+        with:
+          path: data/minnesota.osm.pbf
+          key: mn-osm-${{ github.run_id }}
+          restore-keys: |
+            mn-osm-
+      - name: Download Minnesota extract when cache missing
+        run: |
+          mkdir -p data
+          if [ ! -s data/minnesota.osm.pbf ]; then
+            curl --fail --location --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 1200 \
+              --output data/minnesota.osm.pbf \
+              https://download.geofabrik.de/north-america/us/minnesota-latest.osm.pbf || rm -f data/minnesota.osm.pbf
+          fi
       - name: Automatically discover city retail and competitor leads
         run: python city_discovery.py
+      - name: Remove source extract from uploaded results
+        if: always()
+        run: rm -f data/minnesota.osm.pbf
       - name: Upload scan results
         if: always()
         uses: actions/upload-artifact@v6
