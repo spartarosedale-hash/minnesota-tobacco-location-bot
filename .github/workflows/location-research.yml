@@ -16,12 +16,24 @@ jobs:
       - name: Check location feature registry
         run: python -m unittest -v test_location_feature_registry
       - name: Refresh Census demographic evidence
+        id: census
+        continue-on-error: true
         env:
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
         run: |
           python collect_location_demographics.py --output research_demographics.json
       - name: Collect nearby MnDOT traffic segments
+        id: traffic
+        continue-on-error: true
         run: python collect_mndot_traffic.py --output research_traffic.json
+      - name: Report source statuses
+        if: always()
+        run: |
+          echo "Census outcome: ${{ steps.census.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "MnDOT outcome: ${{ steps.traffic.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.census.outcome }}" != "success" ] || [ "${{ steps.traffic.outcome }}" != "success" ]; then
+            echo "::warning::One or more data collectors failed. Inspect their step logs and downloaded artifacts."
+          fi
       - name: Upload research artifact
         if: always()
         uses: actions/upload-artifact@v4
