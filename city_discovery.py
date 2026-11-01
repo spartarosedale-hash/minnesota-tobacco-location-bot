@@ -4,6 +4,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 import requests
 from lead_enrichment import enrich
+from source_verification import verify_candidates
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -47,6 +48,7 @@ def main():
     for city in cities:
         result=discover_city(city)
         result["enrichment"]=enrich(result["leads"],city)
+        result["source_verification"]=verify_candidates(result["enrichment"]["candidates"])
         results.append(result)
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
