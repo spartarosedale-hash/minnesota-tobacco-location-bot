@@ -65,6 +65,8 @@ def main():
         result["official_source_verification"]=verify_candidates([{"city":city,"title":s["name"],"url":s["url"],"address_candidate":None} for s in result["official_licensing_sources"]])
         result["quality"]={"official_licensing_sources":len(result["official_licensing_sources"]),
                            "osm_business_candidates":len(result["osm_discovery"]["candidates"]),
+                           "osm_status":result["osm_discovery"]["status"],
+                           "osm_endpoint_attempts":len(result["osm_discovery"]["errors"])+(1 if result["osm_discovery"]["endpoint_used"] else 0),
                            "official_pages_read":sum(x.get("source_checked",False) for x in result["official_source_verification"]["candidates"]),
                            "page_address_candidates":sum(len(x.get("page_address_candidates",[])) for x in result["source_verification"]["candidates"]),
                            "search_leads":len(result["leads"]),
@@ -78,7 +80,7 @@ def main():
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"official_pages_read":r["quality"]["official_pages_read"],"osm_business_candidates":r["quality"]["osm_business_candidates"],"page_address_candidates":r["quality"]["page_address_candidates"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"official_pages_read":r["quality"]["official_pages_read"],"osm_business_candidates":r["quality"]["osm_business_candidates"],"osm_status":r["quality"]["osm_status"],"osm_endpoint_attempts":r["quality"]["osm_endpoint_attempts"],"page_address_candidates":r["quality"]["page_address_candidates"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
