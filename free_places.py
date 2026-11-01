@@ -6,8 +6,8 @@ import requests
 from traffic_and_competition import miles
 
 ENDPOINT="https://overpass.private.coffee/api/interpreter"
-TAGS={"shop":["tobacco","convenience","supermarket","mall","department_store"],
-      "amenity":["fuel","fast_food","restaurant","cafe"]}
+TAGS={"shop":["tobacco","e-cigarette","convenience"],
+      "amenity":["fuel"]}
 def discover(lat,lon,radius_miles=5,endpoint=ENDPOINT):
     if not (-90<=lat<=90 and -180<=lon<=180 and 0<radius_miles<=10):
         raise ValueError("Invalid coordinates or radius")
@@ -15,16 +15,15 @@ def discover(lat,lon,radius_miles=5,endpoint=ENDPOINT):
     filters=[]
     for tag,values in TAGS.items():
         values_regex="|".join(values)
-        filters.append(f'node["{tag}"~"^({values_regex})$"](around:{radius},{lat},{lon});')
-        filters.append(f'way["{tag}"~"^({values_regex})$"](around:{radius},{lat},{lon});')
-    query="[out:json][timeout:25];("+ "".join(filters) +");out center tags;"
+        filters.append(f'nwr["{tag}"~"^({values_regex})$"](around:{radius},{lat},{lon});')
+    query="[out:json][timeout:18];("+ "".join(filters) +");out center;"
     errors=[]
     payload=None
     used_endpoint=None
-    endpoints=[endpoint]+(["https://overpass-api.de/api/interpreter"] if endpoint==ENDPOINT else [])
+    endpoints=[endpoint]+(["https://overpass.nchc.org.tw/api/interpreter"] if endpoint==ENDPOINT else [])
     for url in endpoints:
         try:
-            resp=requests.post(url,data={"data":query},timeout=(10,35),
+            resp=requests.get(url,params={"data":query},timeout=(7,22),
                                headers={"User-Agent":"MinnesotaTobaccoSiteResearchBot/1.0"})
             resp.raise_for_status()
             candidate=resp.json()
@@ -58,7 +57,7 @@ def discover(lat,lon,radius_miles=5,endpoint=ENDPOINT):
                        "osm_type":obj.get("type"),"osm_id":obj.get("id"),
                        "estimated_visits":None})
     venues.sort(key=lambda x:x["distance_miles"])
-    tobacco=[v for v in venues if v["category"]=="tobacco"]
+    tobacco=[v for v in venues if v["category"] in ("tobacco","e-cigarette")]
     rings={str(r):sum(v["distance_miles"]<=r for v in tobacco) for r in (1,3,5)}
     return {"status":"ok","source":"OpenStreetMap via Overpass","endpoint_used":used_endpoint,
             "tobacco_candidates_within_miles":rings,"tobacco_candidates":tobacco,
