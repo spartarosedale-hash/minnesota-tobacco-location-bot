@@ -24,10 +24,14 @@ jobs:
           else
             python collect_location_demographics.py --output research_demographics.json
           fi
+      - name: Collect nearby MnDOT traffic segments
+        run: python collect_mndot_traffic.py --output research_traffic.json
       - name: Upload research artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: location-research
-          path: research_demographics.json
+          path: |
+            research_demographics.json
+            research_traffic.json
           if-no-files-found: ignore
