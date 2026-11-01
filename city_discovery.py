@@ -8,6 +8,7 @@ from source_verification import verify_candidates
 from lead_filter import relevant
 from official_sources import for_city,authority_for_city
 from licensing_tracker import licensing_snapshot
+from google_maps_research import google_maps_search_plan
 from geofabrik_discovery import city_bounds,extract_candidates,discovery
 
 ROOT=Path(__file__).resolve().parent
@@ -79,6 +80,7 @@ def main():
         extract_error="Minnesota Geofabrik PBF download unavailable"
     for city in cities:
         result=discover_city(city)
+        result["google_maps_area_searches"]=google_maps_search_plan(city)
         result["licensing_authority"]=authority_for_city(city)
         result["official_licensing_sources"]=for_city(city)
         result["official_licensing_snapshot"]=licensing_snapshot(result["official_licensing_sources"])
