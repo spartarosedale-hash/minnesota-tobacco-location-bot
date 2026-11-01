@@ -15,6 +15,8 @@ ADULT_FIELDS = [f"B01001_{i:03d}E" for i in list(range(9, 26)) + list(range(33, 
 def fetch_json(url, params):
     response = requests.get(url, params=params, timeout=25, headers={"User-Agent":"MinnesotaSiteResearchBot/1.0"})
     response.raise_for_status()
+    if "/missing_key.html" in response.url:
+        raise RuntimeError("Census API redirected to missing_key.html. Configure the free CENSUS_API_KEY as a GitHub Actions repository secret; no demographic data was returned.")
     try:
         return response.json()
     except ValueError as exc:
