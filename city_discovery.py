@@ -12,7 +12,10 @@ from geofabrik_discovery import city_bounds,extract_candidates,discovery
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
 QUERIES=(
-    '{city} MN tobacco shops vape stores',
+    '{city} MN smoke shop',
+    '{city} MN vape shop',
+    '{city} MN tobacco shop',
+    '{city} MN cigar shop',
     '{city} Minnesota tobacco retailer license list',
     '{city} MN retail commercial space for lease',
     '{city} Minnesota city council tobacco license renewals',
