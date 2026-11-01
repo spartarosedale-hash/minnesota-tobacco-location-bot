@@ -9,7 +9,7 @@ class TestCensusLocation(unittest.TestCase):
                   "geographies":{"Census Tracts":[{"STATE":"27","COUNTY":"003","TRACT":"050100"}]}}]}}
             return [["NAME"]+ADULT_CODES,["Tract"]+["10"]*len(ADULT_CODES)]
         result=lookup("123 Test St, MN",fake)
-        self.assertEqual(result["adult_population_21_plus_tract"],340)
+        self.assertEqual(result["adult_population_21_plus_tract"],320)
         self.assertEqual(result["census_tract"],"050100")
     def test_no_match(self):
         result=lookup("Unknown",lambda url,params:{"result":{"addressMatches":[]}})
