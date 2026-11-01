@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 from lead_enrichment import enrich
 from source_verification import verify_candidates
+from lead_filter import relevant
 
 ROOT=Path(__file__).resolve().parent
 CITIES=("Zimmerman","Litchfield")
@@ -37,10 +38,14 @@ def discover_city(city,fetch=requests.get):
         except (requests.RequestException,ET.ParseError) as exc:
             errors.append(query+": "+str(exc)[:160])
     unique={}
+    rejected=0
     for row in findings:
+        if not relevant(row,city):
+            rejected+=1
+            continue
         if row["url"] not in unique:
             unique[row["url"]]=row
-    return {"city":city,"checked_at":datetime.now(timezone.utc).isoformat(),
+    return {"city":city,"rejected_irrelevant":rejected,"raw_search_results":len(findings),"checked_at":datetime.now(timezone.utc).isoformat(),
             "leads":list(unique.values()),"errors":errors,
             "verification":"Search results are NOT confirmed businesses, vacancies or licenses"}
 
@@ -64,7 +69,7 @@ def main():
     out=ROOT/"data"
     out.mkdir(exist_ok=True)
     (out/"city_discovery.json").write_text(json.dumps(results,indent=2)+"\n")
-    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
+    print(json.dumps([{"city":r["city"],"leads":len(r["leads"]),"errors":len(r["errors"]),"rejected_irrelevant":r["rejected_irrelevant"],"classified_leads":r["quality"]["classified_leads"],"address_candidates":r["quality"]["address_candidates"],"source_pages_read":r["quality"]["source_pages_read"]} for r in results],indent=2))
 
 if __name__=="__main__":
     main()
