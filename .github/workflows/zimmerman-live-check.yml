@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4.3.1
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
@@ -29,7 +29,7 @@ jobs:
         run: python zimmerman_live_check.py
       - name: Save result even on failure
         if: always()
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v6
         with:
           name: zimmerman-live-source-report
           path: zimmerman_live_report.json
