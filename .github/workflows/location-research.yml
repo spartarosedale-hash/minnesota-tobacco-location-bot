@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Check location feature registry
-        run: python -m unittest -v test_location_feature_registry
+        run: python -m unittest -v test_location_feature_registry test_audit_location_evidence test_location_estimate test_census_location
       - name: Refresh Census demographic evidence
         id: census
         continue-on-error: true
@@ -26,6 +26,9 @@ jobs:
         id: traffic
         continue-on-error: true
         run: python collect_mndot_traffic.py --output research_traffic.json
+      - name: Audit evidence and holdout prediction errors
+        if: steps.census.outcome == 'success' && steps.traffic.outcome == 'success'
+        run: python audit_location_evidence.py --output location_evidence_audit.json
       - name: Report source statuses
         if: always()
         run: |
@@ -42,4 +45,5 @@ jobs:
           path: |
             research_demographics.json
             research_traffic.json
+            location_evidence_audit.json
           if-no-files-found: ignore
