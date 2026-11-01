@@ -1,0 +1,26 @@
+name: Zimmerman free live source validation
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 14 * * 1'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Test free source modules
+        run: python -m unittest test_address_forecast test_traffic_and_competition test_google_popular_times -v
+      - name: Check real Zimmerman sources
+        run: python zimmerman_live_check.py
+      - name: Save result even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zimmerman-live-source-report
+          path: zimmerman_live_report.json
+          if-no-files-found: warn
