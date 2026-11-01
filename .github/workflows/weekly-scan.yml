@@ -20,6 +20,8 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Test automated lead enrichment
+        run: python -m unittest test_lead_enrichment -v
       - name: Run vacancy scanner
         run: python bot.py
       - name: Automatically discover city retail and competitor leads
