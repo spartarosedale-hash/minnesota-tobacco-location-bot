@@ -1,12 +1,20 @@
 """Run a real, free-source Zimmerman site check; never invent unavailable measurements."""
 import datetime,json,traceback
 from site_report import build
+from address_forecast import forecast
 ADDRESS="26219 Fremont Dr Ste 101, Zimmerman, MN 55398"
 def main():
     result={"address":ADDRESS,"checked_at_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "data_policy":"free public sources only; no paid API calls"}
     try:
-        report=build(ADDRESS)
+        try:
+            report=build(ADDRESS)
+        except Exception as first_error:
+            # Suite numbers may not be recognized by the Census geocoder.
+            fallback="26219 Fremont Dr, Zimmerman, MN 55398"
+            report=build(fallback)
+            result["address_lookup_note"]="Suite-level lookup failed; base street address used"
+            result["address_lookup_error"]=str(first_error)[:250]
         result["status"]="report_generated"
         result["report"]=report
         result["source_status"]={k:(v.get("status","returned") if isinstance(v,dict) else "returned") for k,v in report.items() if k in ("traffic","competition","free_nearby_places","google_popular_times","nearby_busyness")}
