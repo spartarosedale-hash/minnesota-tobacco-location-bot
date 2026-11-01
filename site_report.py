@@ -7,6 +7,7 @@ from traffic_and_competition import nearby_aadt,competitor_summary
 from competitor_traffic import scan
 from besttime_connector import fetch_nearby
 from free_places import discover
+from competitor_registry import registry_competitors
 from google_popular_times import analyze as analyze_google_popular_times
 
 def build(address,competitors=None,traffic_file=None,enable_besttime=False,google_popular_times_file=None):
@@ -21,6 +22,11 @@ def build(address,competitors=None,traffic_file=None,enable_besttime=False,googl
         except Exception as exc: result["competition"]={"status":"unavailable","reason":str(exc)[:250]}
     else:
         result["competition"]={"status":"not_assessed","reason":"No verified competitor geolocation dataset provided"}
+    try:
+        city=result["site"].get("city") or result["site"].get("place_name") or address.split(",")[1].strip()
+        result["competitor_registry"]=registry_competitors(lat,lon,city)
+    except Exception as exc:
+        result["competitor_registry"]={"status":"unavailable","reason":str(exc)[:250]}
     if traffic_file:
         try: result["nearby_store_traffic"]=scan(lat,lon,traffic_file)
         except Exception as exc: result["nearby_store_traffic"]={"status":"unavailable","reason":str(exc)[:250]}
