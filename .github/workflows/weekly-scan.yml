@@ -12,6 +12,7 @@ on:
       - 'page_extraction.py'
       - 'lead_filter.py'
       - 'official_sources.py'
+      - 'licensing_tracker.py'
       - 'osm_city_discovery.py'
       - 'osm_extract.py'
       - 'osm_city_map.py'
