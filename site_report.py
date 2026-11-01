@@ -6,6 +6,7 @@ from address_forecast import forecast
 from traffic_and_competition import nearby_aadt,competitor_summary
 from competitor_traffic import scan
 from besttime_connector import fetch_nearby
+from free_places import discover
 
 def build(address,competitors=None,traffic_file=None,enable_besttime=False):
     result=forecast(address)
@@ -29,6 +30,8 @@ def build(address,competitors=None,traffic_file=None,enable_besttime=False):
         except Exception as exc: result["nearby_busyness"]={"status":"unavailable","reason":str(exc)[:250]}
     else:
         result["nearby_busyness"]={"status":"disabled","reason":"Use --enable-besttime to permit provider API calls"}
+    try: result["free_nearby_places"]=discover(lat,lon)
+    except Exception as exc: result["free_nearby_places"]={"status":"unavailable","reason":str(exc)[:250]}
     result["prediction_confidence"]="NOT CALIBRATED"
     return result
 
