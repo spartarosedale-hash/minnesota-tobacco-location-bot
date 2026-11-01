@@ -26,11 +26,7 @@ def build(address,competitors=None,traffic_file=None,enable_besttime=False,googl
         except Exception as exc: result["nearby_store_traffic"]={"status":"unavailable","reason":str(exc)[:250]}
     else:
         result["nearby_store_traffic"]={"status":"no_measured_visit_data","warning":"No verified competitor visit dataset supplied"}
-    if enable_besttime:
-        try: result["nearby_busyness"]=fetch_nearby(lat,lon,enable_api=True)
-        except Exception as exc: result["nearby_busyness"]={"status":"unavailable","reason":str(exc)[:250]}
-    else:
-        result["nearby_busyness"]={"status":"disabled","reason":"Use --enable-besttime to permit provider API calls"}
+    result["nearby_busyness"]={"status":"disabled","reason":"Paid BestTime API disabled under free-only policy"}
     try: result["free_nearby_places"]=discover(lat,lon)
     except Exception as exc: result["free_nearby_places"]={"status":"unavailable","reason":str(exc)[:250]}
     if google_popular_times_file:
@@ -46,7 +42,7 @@ if __name__=="__main__":
     p.add_argument("address")
     p.add_argument("--competitors")
     p.add_argument("--competitor-traffic")
-    p.add_argument("--enable-besttime",action="store_true")
+    # Paid API calls intentionally unavailable in free-only mode.
     p.add_argument("--google-popular-times")
     args=p.parse_args()
     print(json.dumps(build(args.address,args.competitors,args.competitor_traffic,args.enable_besttime,args.google_popular_times),indent=2))
