@@ -14,6 +14,7 @@ on:
       - 'official_sources.py'
       - 'osm_city_discovery.py'
       - 'osm_extract.py'
+      - 'osm_city_map.py'
       - 'test_osm_city_discovery.py'
       - 'test_lead_filter.py'
       - 'test_source_verification.py'
@@ -36,22 +37,13 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -r requirements.txt 'osmium>=4,<5'
+        run: pip install -r requirements.txt
       - name: Test automated lead enrichment
         run: python -m unittest test_lead_enrichment test_source_verification test_page_extraction test_lead_filter test_osm_city_discovery -v
       - name: Run vacancy scanner
         run: python bot.py
-      - name: Download Minnesota OpenStreetMap extract
-        run: |
-          mkdir -p data
-          curl --fail --location --retry 2 --connect-timeout 15 --max-time 240 \
-            --output data/minnesota.osm.pbf \
-            https://download.geofabrik.de/north-america/us/minnesota-latest.osm.pbf || rm -f data/minnesota.osm.pbf
       - name: Automatically discover city retail and competitor leads
         run: python city_discovery.py
-      - name: Remove large source extract
-        if: always()
-        run: rm -f data/minnesota.osm.pbf
       - name: Upload scan results
         if: always()
         uses: actions/upload-artifact@v6
