@@ -29,6 +29,9 @@ jobs:
       - name: Audit evidence and holdout prediction errors
         if: steps.census.outcome == 'success' && steps.traffic.outcome == 'success'
         run: python audit_location_evidence.py --output location_evidence_audit.json
+      - name: Compare observed store performance
+        if: steps.census.outcome == 'success' && steps.traffic.outcome == 'success'
+        run: python compare_store_performance.py --output store_comparison_report.json
       - name: Report source statuses
         if: always()
         run: |
@@ -46,4 +49,5 @@ jobs:
             research_demographics.json
             research_traffic.json
             location_evidence_audit.json
+            store_comparison_report.json
           if-no-files-found: ignore
