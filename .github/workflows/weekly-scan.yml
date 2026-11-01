@@ -44,7 +44,7 @@ jobs:
       - name: Run vacancy scanner
         run: python bot.py
       - name: Cache weekly Minnesota OSM dataset
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: data/minnesota.osm.pbf
           key: mn-osm-${{ github.run_id }}
