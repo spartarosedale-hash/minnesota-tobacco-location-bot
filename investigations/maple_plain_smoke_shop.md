@@ -19,3 +19,10 @@ Status: location research only; actual sales unknown; do not add to supervised t
 
 ## Comparison design
 Compare Maple Plain to Zimmerman on highway traffic, liquor-store adjacency, gas-station adjacency, drive-time adult population, seasonal traffic, and competition. Do not assume comparable sales solely because of similar features.
+
+## Further verified evidence (October 2026 research)
+- Maple Plain municipal planning commission record describes 5020 Highway 12 as multi-tenant; Liquor Depot occupies the western side, and another eastern tenant space was considered for signage. Source: https://evogov.s3.us-west-2.amazonaws.com/meetings/168/attachments/11202.pdf
+- City sign review lists both Smoke Shop and Liquor Depot at 5020 Hwy 12. Source: https://www.mapleplainmn.gov/media/1636
+- Highway 12 access and median arrangements require site-level verification; historic corridor safety works are documented at https://westhennepin.com/highway-12
+- MnDOT traffic viewer provides segment AADT and count year, but exact segment volume for the shop is not yet retrieved: https://www.dot.state.mn.us/traffic/data/tdms.html
+- Do not infer monthly revenue from neighboring liquor store or highway alone. Current location revenue unknown.
