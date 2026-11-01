@@ -23,6 +23,7 @@ def main():
         result["status"]="blocked"
         result["error_type"]=type(exc).__name__
         result["error"]=str(exc)[:500]
+        result["traceback"]=traceback.format_exc(limit=8)[-2500:]
         result["forecast_validation"]="NO LIVE FORECAST GENERATED"
     with open("zimmerman_live_report.json","w",encoding="utf-8") as f:
         json.dump(result,f,indent=2)
