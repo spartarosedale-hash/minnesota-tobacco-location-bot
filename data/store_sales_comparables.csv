@@ -1,0 +1,12 @@
+store,address,city,monthly_gross_low_usd,monthly_gross_high_usd,monthly_gross_point_usd,transactions_month,source_status,notes
+Zimmerman Tobacco,"26219 Fremont Dr Ste 101",Zimmerman,240000,290000,265000,,user_reported,"Monthly not annual; user confirmed over 250000 monthly; retain as known calibration store"
+Litchfield Tobacco,"231 N Sibley Ave",Litchfield,100500,100500,100500,3387,user_reported,"Most recent reported month; 109 transactions/day; avg ticket 29.67"
+Jordan Tobacco,"212 2nd St E Ste 100",Jordan,90000,95000,,,user_reported,""
+Belle Plaine Tobacco,"109 N Meridian St",Belle Plaine,80000,89000,,,user_reported,""
+Blaine Tobacco,"10549 University Ave NE",Blaine,55000,65000,,,user_reported,""
+New Prague Tobacco,"122 Main St E",New Prague,45000,55000,,,user_reported,""
+Coon Rapids Tobacco,"2740 Main St NW",Coon Rapids,32000,37000,,,user_reported,""
+Nicollet Tobacco,"13716 Nicollet Ave",Burnsville,135000,145000,,,user_reported,""
+White Bear Lake WB Tobacco,"1190 County Rd J Ste 400-500",White Bear Lake,13000,13000,,,user_reported,""
+Eagan Diffley Smoke Shop Plus,"525 Diffley Rd",Eagan,32000,39000,,,user_reported,""
+Maple Plain Smoke Shop,"5020 US-12 Ste 2",Maple Plain,110000,120000,,,user_estimate,"Not verified actual"
