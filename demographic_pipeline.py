@@ -11,13 +11,15 @@ from pathlib import Path
 import requests
 from age_tobacco_model import estimate_by_age
 from sex_tobacco_model import estimate_by_sex
+from vaping_demand_model import estimate_vaping_scenario
+from smokeless_demand_model import estimate_smokeless
 from combined_demographic_model import DemographicEvidence, combine_demographic_evidence, compare_dimensions
 
 ROOT = Path(__file__).resolve().parent
 API = "https://api.census.gov/data/2024/acs/acs5"
 # B01001: male age bins 3..25; female age bins 27..49.
-AGE_GROUPS = {"18_24": (7,8,9,10), "25_44": (11,12,13,14),
-              "45_64": (15,16,17,18,19), "65_plus": (20,21,22,23,24,25)}
+AGE_GROUPS = {"18_24": (8,9,10,11), "25_44": (12,13,14,15),
+              "45_64": (16,17,18,19,20), "65_plus": (21,22,23,24,25)}
 def code(sex, i):
     return f"B01001_{i + (0 if sex == 'male' else 24):03d}E"
 
@@ -47,8 +49,20 @@ def report_city(city,row):
     for product, users in s.product_users.items():
         evidence.append(DemographicEvidence(product,s.source,s.source_year,users,s.adults_included,"sex","US rates applied to MN ACS 2024"))
     combined=combine_demographic_evidence(evidence)
+    vape=estimate_vaping_scenario(a.adults_18_plus)
+    smokeless=estimate_smokeless(a.adults_18_plus,0.021)
+    supplementary={
+        "vaping_mn_benchmark":{"estimated_users_18_plus":round(vape.estimated_adult_vapers,1),
+            "monthly_market_spend_benchmark":round(vape.total_market_spend_benchmark,2),
+            "store_revenue":None,"status":vape.status},
+        "smokeless_us_benchmark":{"estimated_users_18_plus":round(smokeless.users,1),
+            "monthly_tins":None,"store_revenue":None,"status":smokeless.status},
+        "premium_nonpremium_cigars":{"estimated_users":None,
+            "status":"requires adult population by poverty ratio; unavailable"}}
+
     return {"city":city,"acs_place":row["NAME"],"acs_year":2024,"adult_population_18_plus":a.adults_18_plus,
             "age_counts":ages,"sex_counts":sexes,
+            "supplementary_product_scenarios":supplementary,
             "product_evidence":{product:{"marginal_estimates":{dimension:round(e.estimated_users,1)
                   for dimension,e in assessment.evidence_by_dimension.items()},
                   "prevalence_by_dimension":compare_dimensions(assessment),
@@ -56,7 +70,9 @@ def report_city(city,row):
                   "status":assessment.status} for product,assessment in combined.items()},
             "household_income_context":row.get("_income_context"),
             "income_status":"Household counts are context only, not adult income counts",
-            "retail_21_plus_status":"unavailable: 18-20 population not separately estimated",
+            "retail_21_plus_population":a.adults_18_plus-sum(
+                int(row[code(sex,i)]) for sex in ("male","female") for i in (8,9)),
+            "retail_21_plus_status":"ACS 18-20 excluded; product prevalence still 18+ only",
             "sales_prediction_status":"not calibrated"}
 
 def main():
