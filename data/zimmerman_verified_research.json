@@ -1,0 +1,61 @@
+{
+  "city": "Zimmerman",
+  "site": "26219 Fremont Dr Ste 101, Zimmerman, MN 55398",
+  "research_date": "2026-11-02",
+  "traffic": {
+    "frontage_aadt": null,
+    "us169_aadt": null,
+    "county_road4_aadt": null,
+    "source": "https://www.dot.state.mn.us/traffic/data/data-products.html",
+    "status": "not yet verified; no numerical values assigned"
+  },
+  "construction": {
+    "project": "US 169 / Sherburne County Road 4 interchange",
+    "status": "2026 construction, final traffic configuration began October 23; roadwork and flagging on Fremont Drive continuing into November",
+    "impact": "historical sales during construction must not be treated as stable access baseline",
+    "source": "https://clients.bolton-menk.com/hwy169andcr4/",
+    "year": 2026,
+    "access": "County Road 4 interchange and Fremont Drive roundabout; several old US 169 accesses permanently closed"
+  },
+  "competitors": [
+    {
+      "name": "Zimmerman Smoke Shop",
+      "address": "12686 Fremont Ave, Zimmerman, MN 55398",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf",
+      "status": "2024 city tobacco-license list; current operation separately listed in business search"
+    },
+    {
+      "name": "JR Tobacco",
+      "address": "12626 Fremont Ave, Zimmerman, MN 55398",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf",
+      "status": "2024 license listed as Adam's Tobacco Shop at same address; current business listed as JR Tobacco; identity continuity not assumed"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Frontier Liquor",
+      "address": "26207 Fremont Dr, Zimmerman, MN 55398",
+      "type": "liquor",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf"
+    },
+    {
+      "name": "Holiday Stationstore",
+      "address": "26125 Highway 169, Zimmerman, MN 55398",
+      "type": "gas",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf"
+    },
+    {
+      "name": "Casey's",
+      "address": "13140 Fremont Ave, Zimmerman, MN 55398",
+      "type": "gas",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf"
+    },
+    {
+      "name": "Speedway",
+      "address": "26075 3rd St E, Zimmerman, MN 55398",
+      "type": "gas",
+      "source": "https://zimmerman.govoffice.com/vertical/sites/%7BE3C534B1-3B55-4FDD-B367-44985F320A41%7D/uploads/050624_Council_Minutes.pdf"
+    }
+  ],
+  "source_notes": "Official 2024 license evidence is historical, not proof of 2026 licenses; store sales held out until a model is trained and frozen."
+}
