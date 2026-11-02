@@ -33,6 +33,9 @@ on:
       - 'test_combined_demographic_model.py'
       - 'test_age_tobacco_model.py'
       - 'test_sex_tobacco_model.py'
+      - 'location_feature_audit.py'
+      - 'test_location_feature_audit.py'
+      - 'location_research_requirements.json'
   schedule:
     - cron: '0 14 * * 1'
 
@@ -57,6 +60,10 @@ jobs:
         run: python -m unittest test_age_tobacco_model test_sex_tobacco_model test_combined_demographic_model test_demographic_pipeline -v
       - name: Build Census demographic research report
         run: python demographic_pipeline.py
+      - name: Test location feature coverage
+        run: python -m unittest test_location_feature_audit -v
+      - name: Build location feature audit
+        run: python location_feature_audit.py
       - name: Run vacancy scanner
         run: python bot.py
       - name: Cache weekly Minnesota OSM dataset
