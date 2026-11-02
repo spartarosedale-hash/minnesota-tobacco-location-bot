@@ -50,16 +50,28 @@ def build_audit(city, requirements, demographic=None):
         else:
             groups[group] = [{"feature": feature, "status": "unavailable",
                               "value": None, "source": None} for feature in features]
+    verified_path = ROOT / "data" / (city.casefold().replace(" ", "_") + "_verified_research.json")
+    verified = json.loads(verified_path.read_text(encoding="utf-8")) if verified_path.exists() else {}
+    for item in groups.get("road_network", []):
+        if verified.get("construction") and ("construction" in item["feature"] or "detours" in item["feature"]):
+            item.update({"status": "verified_qualitative", "value": verified["construction"]["status"], "source": verified["construction"]["source"]})
+    for item in groups.get("competitive_context", []):
+        if verified.get("competitors") and "licensed specialty" in item["feature"]:
+            item.update({"status": "historical_official_license_evidence", "value": verified["competitors"], "source": verified["competitors"][0]["source"]})
+    for item in groups.get("anchors", []):
+        if verified.get("anchors") and ("grocery and liquor" in item["feature"] or "Holiday" in item["feature"]):
+            item.update({"status": "historical_official_license_evidence", "value": verified["anchors"], "source": verified["anchors"][0]["source"]})
     site = KNOWN_SITES.get(city, {})
     demographic = demographic or {}
     counts = {
         "required_features": sum(len(x) for k, x in groups.items() if k != "observed_validation"),
-        "measured_features": 0,
-        "verified_qualitative_features": 0,
+        "measured_features": sum(x["status"] == "measured" for v in groups.values() for x in v),
+        "verified_qualitative_features": sum(x["status"] == "verified_qualitative" for v in groups.values() for x in v),
     }
     return {
         "city": city, "site_address": site.get("address"),
         "site_context": site.get("qualitative", {}),
+        "sourced_local_research": verified,
         "road_segments_to_verify": site.get("road_segments_to_verify", []),
         "feature_groups": groups,
         "census_population_18_plus": demographic.get("adult_population_18_plus"),
