@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "purpose": "Evidence checklist for blind store-sales backtests. Missing data is never silently scored as zero or invented.",
+  "benchmark_policy": "Hide actual store revenue from feature collection and prediction until after forecast is frozen.",
+  "feature_groups": {
+    "road_network": [
+      "MnDOT measured AADT on frontage road and nearby highways separately",
+      "count year and source",
+      "hourly/daypart and weekend traffic if available",
+      "commuter direction and turning access",
+      "distance and driving time to highway ramps/intersections",
+      "road speed and signal stops",
+      "construction, detours and permanent access changes",
+      "truck share and seasonality"
+    ],
+    "site_access": [
+      "street visibility and sign sightlines",
+      "right/left turn restrictions and median",
+      "parking supply and entry/exit ease",
+      "storefront orientation and setback",
+      "retail square footage",
+      "co-tenancy and shared entrances"
+    ],
+    "customer_market": [
+      "21+ catchment population at 5/10/15 minute drive times",
+      "age and sex mix",
+      "ethnicity and race distributions used only as validated aggregate market evidence, never individual targeting",
+      "household income and adult-person income distinct",
+      "smoking, vaping, cigars, chew and nicotine pouch demand separately",
+      "purchase frequency and category spend with source and uncertainty",
+      "surrounding towns and pass-through customers",
+      "seasonal population and employment"
+    ],
+    "competitive_context": [
+      "all licensed specialty tobacco/vape shops with actual operating verification",
+      "gas station and convenience store tobacco/vape offerings",
+      "competitor assortment, price and hours where verified",
+      "distance and driving-time competition",
+      "cannibalization and competitor catchment overlap"
+    ],
+    "anchors": [
+      "Walmart and Target proximity",
+      "grocery and liquor store traffic generators",
+      "Holiday, QuikTrip, Speedway and independent gas locations",
+      "restaurants, employers and other draw",
+      "cross-shopping convenience"
+    ],
+    "regulatory": [
+      "local licensing eligibility, caps and buffers",
+      "flavor restrictions and effective dates",
+      "zoning and lot/parcel constraints",
+      "age 21+ legal sales",
+      "municipality exclusion list for new openings"
+    ],
+    "observed_validation": [
+      "monthly gross sales and transaction counts",
+      "category sales where available",
+      "seasonality and construction periods",
+      "store opening maturity and promotions",
+      "holdout-city accuracy with absolute percentage error"
+    ]
+  },
+  "cities": [
+    "Zimmerman",
+    "Litchfield"
+  ],
+  "special_notes": {
+    "Zimmerman": "26219 Fremont Dr Ste 101. Separately validate Highway 169 vs Fremont Drive traffic and 2025-2026 Highway 169/County Road 4 construction/access changes. Nearby Holiday gas and liquor co-tenancy.",
+    "Litchfield": "231 N Sibley Ave. Include Sibley frontage counts, competing gas stations, regional customer draw, and user's observed transaction benchmark."
+  },
+  "missing_data_policy": "For each factor emit measured / verified qualitative / assumption / unavailable, with source, year, and confidence. Do not claim a sales accuracy percentage without a held-out numeric prediction.",
+  "reference_sources": [
+    "https://www.dot.state.mn.us/traffic/data/data-products.html",
+    "https://content.govdelivery.com/accounts/MNBOLTONMENK/bulletins/40a65df"
+  ]
+}
