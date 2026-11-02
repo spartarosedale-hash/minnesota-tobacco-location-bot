@@ -1,4 +1,8 @@
 import unittest
+from unittest.mock import patch
+import tempfile
+from pathlib import Path
+import json
 from demographic_pipeline import age_counts,sex_counts,report_city,code,AGE_GROUPS
 class DemographicPipelineTests(unittest.TestCase):
     def test_acs_age_boundaries(self):
@@ -20,4 +24,15 @@ class DemographicPipelineTests(unittest.TestCase):
         self.assertEqual(result["retail_21_plus_population"],sum(s.values())-40)
         self.assertIsNone(result["supplementary_product_scenarios"]["premium_nonpremium_cigars"]["estimated_users"])
         self.assertIsNone(result["supplementary_product_scenarios"]["vaping_mn_benchmark"]["store_revenue"])
+    def test_income_context_is_households_not_adults(self):
+        row={"NAME":"Litchfield city, Minnesota"}
+        for sex in ("male","female"):
+            for ids in AGE_GROUPS.values():
+                for i in ids: row[code(sex,i)]="10"
+        row["_income_context"]={"household_counts_by_income":{"B19001_001E":1200},
+                                 "median_household_income":65000,"unit":"households_not_adults"}
+        result=report_city("Litchfield",row)
+        self.assertEqual(result["household_income_context"]["median_household_income"],65000)
+        self.assertIsNone(result["product_evidence"]["cigarettes"]["joint_estimate"])
+        self.assertEqual(result["retail_21_plus_population"],sum(sex_counts(row).values())-40)
 if __name__=="__main__": unittest.main()
