@@ -36,6 +36,9 @@ on:
       - 'location_feature_audit.py'
       - 'test_location_feature_audit.py'
       - 'location_research_requirements.json'
+      - 'sales_backtest.py'
+      - 'test_sales_backtest.py'
+      - 'data/store_sales_comparables.csv'
   schedule:
     - cron: '0 14 * * 1'
 
@@ -64,6 +67,10 @@ jobs:
         run: python -m unittest test_location_feature_audit -v
       - name: Build location feature audit
         run: python location_feature_audit.py
+      - name: Test sales baseline
+        run: python -m unittest test_sales_backtest -v
+      - name: Run holdout sales baseline
+        run: python sales_backtest.py
       - name: Run vacancy scanner
         run: python bot.py
       - name: Cache weekly Minnesota OSM dataset
