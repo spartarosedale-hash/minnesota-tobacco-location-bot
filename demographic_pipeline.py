@@ -54,7 +54,8 @@ def report_city(city,row):
                   "prevalence_by_dimension":compare_dimensions(assessment),
                   "joint_estimate":assessment.estimated_unique_users,
                   "status":assessment.status} for product,assessment in combined.items()},
-            "income_status":"unavailable: adult population by household income not yet sourced",
+            "household_income_context":row.get("_income_context"),
+            "income_status":"Household counts are context only, not adult income counts",
             "retail_21_plus_status":"unavailable: 18-20 population not separately estimated",
             "sales_prediction_status":"not calibrated"}
 
@@ -64,7 +65,19 @@ def main():
     out={"generated_at":datetime.now(timezone.utc).isoformat(),"cities":{},"errors":{}}
     try:
         rows=fetch_mn_places()
-        lookup={r["NAME"].split(",")[0].removesuffix(" city").removesuffix(" township").strip().casefold():r for r in rows}
+        variables=[f"B19001_{i:03d}E" for i in range(1,18)]+["B19013_001E"]
+        response=requests.get(API,params={"get":"NAME,"+",".join(variables),"for":"place:*","in":"state:27"},timeout=45)
+        response.raise_for_status()
+        data=response.json()
+        incomes={r["NAME"]:r for r in (dict(zip(data[0],v)) for v in data[1:])}
+        for row in rows:
+            inc=incomes.get(row["NAME"])
+            if inc:
+                row["_income_context"]={"household_counts_by_income":{k:int(inc[k]) for k in variables[:-1]},
+                    "median_household_income":int(inc["B19013_001E"]),
+                    "unit":"households_not_adults"}
+
+        lookup={r["NAME"].split(",")[0].removesuffix(" city").removesuffix(" town").strip().casefold():r for r in rows}
         for city in cities:
             row=lookup.get(city.casefold())
             if row is None:
