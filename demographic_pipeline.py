@@ -31,11 +31,21 @@ def sex_counts(row):
     return {sex: sum(int(row[code(sex,i)]) for band, ids in AGE_GROUPS.items() for i in ids)
             for sex in ("male","female")}
 
+def fetch_census_json(session, params):
+    response = session.get(API, params=params, timeout=45)
+    response.raise_for_status()
+    try:
+        data = response.json()
+    except ValueError as exc:
+        sample = response.text[:180].replace("\\n", " ")
+        raise ValueError(f"Census returned non-JSON (HTTP {response.status_code}, URL {response.url}, body {sample!r})") from exc
+    if not isinstance(data, list) or len(data) < 2 or not isinstance(data[0], list):
+        raise ValueError(f"Unexpected Census JSON structure from {response.url}")
+    return data
+
 def fetch_mn_places(session=requests):
     variables = sorted({code(sex,i) for sex in ("male","female") for ids in AGE_GROUPS.values() for i in ids})
-    response = session.get(API,params={"get":"NAME,"+",".join(variables),"for":"place:*","in":"state:27"},timeout=45)
-    response.raise_for_status()
-    data=response.json()
+    data=fetch_census_json(session,{"get":"NAME,"+",".join(variables),"for":"place:*","in":"state:27"})
     return [dict(zip(data[0],values)) for values in data[1:]]
 
 def report_city(city,row):
@@ -82,9 +92,7 @@ def main():
     try:
         rows=fetch_mn_places()
         variables=[f"B19001_{i:03d}E" for i in range(1,18)]+["B19013_001E"]
-        response=requests.get(API,params={"get":"NAME,"+",".join(variables),"for":"place:*","in":"state:27"},timeout=45)
-        response.raise_for_status()
-        data=response.json()
+        data=fetch_census_json(requests,{"get":"NAME,"+",".join(variables),"for":"place:*","in":"state:27"})
         incomes={r["NAME"]:r for r in (dict(zip(data[0],v)) for v in data[1:])}
         for row in rows:
             inc=incomes.get(row["NAME"])
@@ -106,5 +114,6 @@ def main():
     (ROOT/"data").mkdir(exist_ok=True)
     (ROOT/"data"/"demographic_research.json").write_text(json.dumps(out,indent=2)+"\n",encoding="utf-8")
     print("Demographic reports:",len(out["cities"]),"errors:",out["errors"])
-    if out["errors"]: raise SystemExit(1)
+    if out["errors"]:
+        print("Warning: demographic research incomplete; vacancy scan can continue.")
 if __name__=="__main__": main()
