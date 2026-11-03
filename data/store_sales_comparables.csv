@@ -1,5 +1,5 @@
 store,address,city,monthly_gross_low_usd,monthly_gross_high_usd,monthly_gross_point_usd,transactions_month,source_status,notes
-Zimmerman Tobacco,"26219 Fremont Dr Ste 101",Zimmerman,240000,290000,265000,9138,user_reported,"Monthly not annual; average ticket $29 user-reported; 9138 transactions/month DERIVED from midpoint and ticket, not observed POS count"
+Zimmerman Tobacco,"26219 Fremont Dr Ste 101",Zimmerman,240000,290000,265000,,user_reported,"Monthly not annual; average ticket $29 user-reported; 9138 transactions/month DERIVED from midpoint and ticket, not observed POS count"
 Litchfield Tobacco,"231 N Sibley Ave",Litchfield,100500,100500,100500,3387,user_reported,"Most recent reported month; 109 transactions/day; avg ticket 29.67"
 Jordan Tobacco,"212 2nd St E Ste 100",Jordan,90000,95000,,,user_reported,""
 Belle Plaine Tobacco,"109 N Meridian St",Belle Plaine,80000,89000,,,user_reported,""
