@@ -25,6 +25,9 @@ def get_json(url,params):
 def geocode(address):
     data=get_json(GEOCODE,{"address":address,"benchmark":"Public_AR_Current","vintage":"Current_Current","format":"json"})
     matches=data.get("result",{}).get("addressMatches",[])
+    if not matches and " Ste " in address:
+        # Census street-range geocoder may reject a suite number.
+        return geocode(address.split(" Ste ")[0] + ", " + address.split(", ",1)[1])
     if not matches: return None
     m=matches[0]
     return {"lat":m["coordinates"]["y"],"lon":m["coordinates"]["x"],
