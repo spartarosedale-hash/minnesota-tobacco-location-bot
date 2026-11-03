@@ -40,6 +40,7 @@ on:
       - 'test_sales_backtest.py'
       - 'location_sales_model.py'
       - 'theory_validation.py'
+      - 'three_site_research_pipeline.py'
       - 'test_theory_validation.py'
       - 'demographic_demand.py'
       - 'test_demographic_demand.py'
@@ -84,6 +85,8 @@ jobs:
         run: |
           python -m unittest test_theory_validation -v
           python theory_validation.py
+      - name: Research three locations using MnDOT and Census
+        run: python three_site_research_pipeline.py
       - name: Run holdout sales baseline
         run: python sales_backtest.py
       - name: Run vacancy scanner
