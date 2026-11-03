@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "purpose": "Population-level context for location forecasts; NOT store conversion or customer purchase frequency",
+    "sources": [
+      "https://www.cdc.gov/nchs/products/databriefs/db524.htm",
+      "https://odphp.health.gov/healthypeople/objectives-and-data/browse-objectives/tobacco-use/reduce-current-cigarette-smoking-adults-tu-02/infographic?year=2023",
+      "https://www.cdc.gov/nchs/products/databriefs/db475.htm",
+      "https://api.census.gov/data/2024/acs/acs5/groups/B19013.json",
+      "https://pathstudy.nih.gov/"
+    ],
+    "survey_year": 2023,
+    "retail_min_age": 21,
+    "warning": "National 18+ prevalence must not be applied as an exact 21+ local rate; age and race marginals cannot be multiplied as independent factors."
+  },
+  "vape_current_use_percent_by_age_2023": {
+    "21_24": 15.5,
+    "25_34": 12.6,
+    "35_49": 7.3,
+    "50_64": 3.3,
+    "65_plus": 0.9
+  },
+  "vape_current_use_percent_by_race_2023": {
+    "asian_non_hispanic": 3.4,
+    "black_non_hispanic": 5.7,
+    "white_non_hispanic": 7.5,
+    "other_multiracial_non_hispanic": 8,
+    "hispanic_any_race": 4.4
+  },
+  "vape_current_use_percent_by_sex_2023": {
+    "male": 7.6,
+    "female": 5.5
+  },
+  "cigarette_current_smoking_age_adjusted_percent_by_race_2023": {
+    "asian_non_hispanic": 5.3,
+    "black_non_hispanic": 12,
+    "white_non_hispanic": 12.4,
+    "multiracial_non_hispanic": 11.7,
+    "hispanic_any_race": 8.1,
+    "american_indian_alaska_native_non_hispanic": 15.4
+  },
+  "median_household_income": {
+    "source": "US Census ACS 2024 five-year B19013_001E",
+    "variable": "B19013_001E",
+    "unit": "2024 inflation-adjusted USD",
+    "treatment": "context only until empirical calibration; do not invent income multiplier"
+  },
+  "purchase_frequency": {
+    "cigarettes_visits_per_month": null,
+    "vapes_visits_per_month": null,
+    "source": "No validated population-to-store-visit conversion from these sources; user hypothesis cigarettes approximately twice vaping frequency is not an observed survey parameter"
+  }
+}
