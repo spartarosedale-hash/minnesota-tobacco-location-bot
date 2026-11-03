@@ -5,6 +5,7 @@ explicitly scenario-assumed inputs. This is not a trained accuracy claim.
 """
 from dataclasses import dataclass
 from typing import Optional
+from demographic_demand import summarize_market
 
 DAYS_PER_MONTH = 30.4375
 
@@ -22,6 +23,9 @@ class SiteInputs:
     accessibility_factor: Optional[float] = None
     average_ticket: Optional[float] = None
     anchor_visits_per_day: float = 0.0
+    age_21_plus_by_bin: Optional[dict] = None
+    median_household_income_usd: Optional[float] = None
+    race_21_plus_by_group: Optional[dict] = None
 
 def predict_monthly_sales(x: SiteInputs):
     required = ("frontage_aadt", "frontage_capture_rate", "highway_aadt",
@@ -46,7 +50,9 @@ def predict_monthly_sales(x: SiteInputs):
         x.highway_aadt * x.highway_access_share * x.highway_capture_rate)
     repeat_visits = x.local_21_plus * x.local_customer_penetration * x.local_visits_per_month / DAYS_PER_MONTH
     visits = (road_visits + repeat_visits + x.anchor_visits_per_day) * x.competition_retention * x.accessibility_factor
-    return {"status": "scenario_not_validated", "daily_transactions": round(visits, 2),
+    return {"status": "scenario_not_validated",
+            "demographic_research": summarize_market(x.age_21_plus_by_bin, x.median_household_income_usd, x.race_21_plus_by_group),
+            "daily_transactions": round(visits, 2),
             "average_ticket": x.average_ticket,
             "monthly_gross_sales": round(visits * x.average_ticket * DAYS_PER_MONTH),
             "components": {"frontage_daily": round(x.frontage_aadt*x.frontage_capture_rate,2),
