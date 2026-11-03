@@ -1,0 +1,53 @@
+{
+  "site": "Zimmerman Tobacco",
+  "address": "26219 Fremont Dr Ste 101, Zimmerman, MN",
+  "test_type": "location_model_input_coverage_and_required_transactions; NOT blind prediction",
+  "actual_monthly_sales_midpoint_usd": 265000,
+  "actual_range_usd": [
+    240000,
+    290000
+  ],
+  "source": "user-reported",
+  "public_context": {
+    "city_population_2025": 6904,
+    "median_household_income_acs_2024_usd": 85645,
+    "median_age_acs_2024": 32.2,
+    "under_18_percent": 30.8,
+    "source_urls": [
+      "https://www.census.gov/quickfacts/fact/table/zimmermancityminnesota/NES010222",
+      "https://censusreporter.org/profiles/16000US2772238-zimmerman-mn/"
+    ]
+  },
+  "transaction_requirements": [
+    {
+      "assumed_average_ticket_usd": 30,
+      "required_daily_transactions_at_actual_midpoint": 290
+    },
+    {
+      "assumed_average_ticket_usd": 40,
+      "required_daily_transactions_at_actual_midpoint": 218
+    },
+    {
+      "assumed_average_ticket_usd": 50,
+      "required_daily_transactions_at_actual_midpoint": 174
+    }
+  ],
+  "model_result": {
+    "status": "insufficient_measured_inputs",
+    "predicted_monthly_sales_usd": null,
+    "missing": [
+      "frontage_aadt",
+      "frontage_capture_rate",
+      "highway_aadt",
+      "highway_access_share",
+      "highway_capture_rate",
+      "local_21_plus_catchment",
+      "local_customer_penetration",
+      "local_visits_per_month",
+      "competition_retention",
+      "accessibility_factor",
+      "average_ticket"
+    ]
+  },
+  "interpretation": "National tobacco prevalence is not a store conversion rate. Income coefficient uncalibrated. No valid location forecast or accuracy score yet. Do not tune conversion factors to Zimmerman actual then claim independent validation."
+}
