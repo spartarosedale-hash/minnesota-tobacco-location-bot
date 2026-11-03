@@ -1,0 +1,72 @@
+{
+  "method": "Evidence inventory for location-only prediction. Actual sales excluded from predictor inputs.",
+  "sites": [
+    {
+      "name": "Litchfield Tobacco",
+      "address": "231 N Sibley Ave, Litchfield, MN",
+      "frontage_aadt": null,
+      "highway_aadt": null,
+      "median_household_income_usd": 54875,
+      "city_population": 6528,
+      "retail_anchors": [
+        "downtown retail"
+      ],
+      "competitors": [
+        "Shell",
+        "Marathon",
+        "Litchfield Corner"
+      ],
+      "parking": "unmeasured",
+      "catchment_21_plus": null,
+      "traffic_source": "https://www.dot.state.mn.us/traffic/data/data-products.html",
+      "evidence": "user supplied competition; Census city figures from prior research, not site catchment"
+    },
+    {
+      "name": "Zimmerman Tobacco",
+      "address": "26219 Fremont Dr Ste 101, Zimmerman, MN",
+      "frontage_aadt": null,
+      "highway_aadt": null,
+      "median_household_income_usd": 85645,
+      "city_population": 6904,
+      "retail_anchors": [
+        "Holiday",
+        "Frontier Liquor"
+      ],
+      "competitors": [
+        "Zimmerman Smoke Shop",
+        "JR Tobacco",
+        "gas stations"
+      ],
+      "parking": "unmeasured",
+      "catchment_21_plus": null,
+      "traffic_source": "https://www.dot.state.mn.us/traffic/data/data-products.html",
+      "evidence": "user-supplied and historical municipal records; no verified current frontage AADT"
+    },
+    {
+      "name": "MSP Tobacco and Vapor",
+      "address": "2439 W 7th St, Saint Paul, MN",
+      "frontage_aadt": 31950,
+      "frontage_aadt_source_type": "landlord marketing VPD; not verified MnDOT AADT",
+      "frontage_aadt_year": "2024 marketing flyer",
+      "frontage_aadt_source": "https://www.pasterretailmn.com/uploads/1/4/5/0/145014121/sibley_plaza_flyer.pdf",
+      "highway_aadt": null,
+      "median_household_income_usd": null,
+      "city_population": null,
+      "retail_anchors": [
+        "Aldi 24781 SF",
+        "Planet Fitness 18931 SF",
+        "Yarmo Liquor 3000 SF",
+        "AutoZone 7640 SF",
+        "Wandering Leaf Brewing 7600 SF",
+        "Subway",
+        "pharmacy"
+      ],
+      "competitors": [],
+      "parking": "shopping center parking, capacity not measured",
+      "catchment_21_plus": null,
+      "legal_source": "https://law.justia.com/cases/minnesota/court-of-appeals/2026/a25-2169.html",
+      "note": "Historical sales site 2439, NOT proposed relocated 2419; retail anchor roster from historical leasing flyer, current occupancy unverified"
+    }
+  ],
+  "prediction_status": "not defensible without catchment counts and independent capture estimates; do not train on held-out actual sales"
+}
