@@ -31,7 +31,7 @@ def geocode(address):
             "matched_address":m.get("matchedAddress"),"geographies":m.get("geographies",{})}
 
 def nearby_aadt(lat,lon):
-    # Query in WGS84, 1.5km search radius, inspect returned segment geometry.
+    # Query in WGS84, 1.5km search radius; candidate segments are not storefront AADT.
     data=get_json(TRAFFIC,{"f":"json","geometry":json.dumps({"x":lon,"y":lat,"spatialReference":{"wkid":4326}}),
         "geometryType":"esriGeometryPoint","inSR":4326,"spatialRel":"esriSpatialRelIntersects",
         "distance":1500,"units":"esriSRUnit_Meter","outFields":"*","returnGeometry":"false","outSR":4326})
@@ -53,7 +53,7 @@ def census_tract(geo):
     state,county,tract_code=geoid[:2],geoid[2:5],geoid[5:]
     # B01001 sex-by-age counts, B19013 median household income.
     fields=["NAME","B01001_001E","B19013_001E"]+[
-        f"B01001_{i:03d}E" for i in list(range(9,26))+list(range(33,50))]
+        f"B01001_{i:03d}E" for i in list(range(10,26))+list(range(34,50))]
     data=get_json(CENSUS,{"get":",".join(fields),"for":f"tract:{tract_code}",
                            "in":f"state:{state} county:{county}"})
     values=dict(zip(data[0],data[1]))
@@ -62,7 +62,7 @@ def census_tract(geo):
             v=int(values[k])
             return v if v>=0 else None
         except (ValueError,TypeError,KeyError):return None
-    # ACS B01001: male 21+ bins 009..025; female 21+ bins 033..049.
+    # ACS B01001: male 21+ bins 010..025; female 21+ bins 034..049.
     bins=[num(f"B01001_{i:03d}E") for i in list(range(9,26))+list(range(33,50))]
     return {"geography":"Census tract, NOT drive-time catchment","geoid":geoid,
             "name":values.get("NAME"),"population_total":num("B01001_001E"),
