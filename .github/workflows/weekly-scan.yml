@@ -39,6 +39,8 @@ on:
       - 'sales_backtest.py'
       - 'test_sales_backtest.py'
       - 'location_sales_model.py'
+      - 'theory_validation.py'
+      - 'test_theory_validation.py'
       - 'demographic_demand.py'
       - 'test_demographic_demand.py'
       - 'data/tobacco_usage_statistics.json'
@@ -78,6 +80,10 @@ jobs:
         run: python -m unittest test_demographic_demand -v
       - name: Test restored location-based sales model
         run: python -m unittest test_location_sales_model -v
+      - name: Test and report transaction-volume theory
+        run: |
+          python -m unittest test_theory_validation -v
+          python theory_validation.py
       - name: Run holdout sales baseline
         run: python sales_backtest.py
       - name: Run vacancy scanner
