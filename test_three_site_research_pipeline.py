@@ -13,8 +13,8 @@ class ThreeSiteResearchTests(unittest.TestCase):
             row={k:"0" for k in keys}
             row["NAME"]="test tract"
             row["B01001_001E"]="1000"
-            row["B01001_009E"]="50"
-            row["B01001_033E"]="40"
+            row["B01001_010E"]="50"
+            row["B01001_034E"]="40"
             row["B19013_001E"]="75000"
             return [keys,[row[k] for k in keys]]
         with patch("three_site_research_pipeline.get_json",side_effect=fake):
